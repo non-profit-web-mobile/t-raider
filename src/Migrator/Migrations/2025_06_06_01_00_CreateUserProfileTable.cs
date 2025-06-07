@@ -17,6 +17,7 @@ public class CreateUserProfileTable : MigrationBase
 				table.WithColumn("StreamEnabled").AsBoolean().NotNullable();
 				table.WithColumn("SummaryEnabled").AsBoolean().NotNullable();
 				table.WithColumn("Confidence").AsDouble().NotNullable();
+				table.WithColumn("Session").AsString(4000).NotNullable();
 			});
 	}
 }
