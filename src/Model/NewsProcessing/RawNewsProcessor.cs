@@ -16,7 +16,7 @@ public class RawNewsProcessor(
 {
     public async Task ProcessAsync(RawNewsMessage rawNewsMessage)
     {
-        var processResult = await gptClient.ProcessNewsAsync(rawNewsMessage.NewsLink);
+        var processResult = await gptClient.ProcessNewsAsync(rawNewsMessage.NewsLink, rawNewsMessage.SourceReliability);
 
         switch (processResult)
         {

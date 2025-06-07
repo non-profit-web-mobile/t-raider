@@ -9,6 +9,5 @@ public record NewsAnalyze(
     [property: DataMember(Name = "sourceUrl")] Uri SourceUrl,
     [property: DataMember(Name = "newsworthiness")] double Newsworthiness,
     [property: DataMember(Name = "explanation")] string Explanation,
-    [property: DataMember(Name = "tickers")] IReadOnlyList<string> Tickers,
     [property: DataMember(Name = "hypotheses")] IReadOnlyList<Hypothesis> Hypotheses);
     

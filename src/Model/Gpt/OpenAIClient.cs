@@ -19,11 +19,11 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
             Endpoint = new Uri("https://api.openai.com/v1")
         });
 
-    public async Task<INewsProcessorResult> ProcessNewsAsync(string newsUrl)
+    public async Task<INewsProcessorResult> ProcessNewsAsync(string newsUrl, int sourceReliability)
     {
         try
         {
-            return await ProcessNewsSafeAsync(newsUrl);
+            return await ProcessNewsSafeAsync(newsUrl, sourceReliability);
         }
         catch (Exception exception)
         {
@@ -31,11 +31,13 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
         }
     }
 
-    private async Task<INewsProcessorResult> ProcessNewsSafeAsync(string newsUrl)
+    private async Task<INewsProcessorResult> ProcessNewsSafeAsync(string newsUrl, int sourceReliability)
     {
         var stopwatch = Stopwatch.StartNew();
 
-        var userInputText = GptPrompts.NewsToHypothesis.Replace("{{ URL }}", newsUrl);
+        var userInputText = GptPrompts.NewsToHypothesis
+            .Replace("{{ URL }}", newsUrl)
+            .Replace("{{ SOURCE_RELIABILITY }}", sourceReliability.ToString());
 
         OpenAIResponse openAiResponse = await _openAiResponseClient.CreateResponseAsync(
             userInputText: userInputText,
