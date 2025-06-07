@@ -7,4 +7,6 @@ public interface ITopicInfoProvider
 	TopicInfo GetHypothesesTopicInfo();
 
 	TopicInfo GetHypothesesForUsersTopicInfo();
+	
+	TopicInfo GetAdminSignalsTopicInfo();
 }
