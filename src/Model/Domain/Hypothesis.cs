@@ -4,11 +4,12 @@ namespace Model.Domain;
 
 [DataContract]
 public record Hypothesis(
-	[property: DataMember(Name = "tickers")] IReadOnlyList<TickerInfo> Tickers,
+	[property: DataMember(Name = "ticker")] string Ticker,
+	[property: DataMember(Name = "price")] decimal Price,
 	[property: DataMember(Name = "action")] ActionType Action,
 	[property: DataMember(Name = "probability")] double Probability,
+	[property: DataMember(Name = "explanation")] string Explanation,
 	[property: DataMember(Name = "period")] int Period,
 	[property: DataMember(Name = "tactics")] string Tactics,
-	[property: DataMember(Name = "entryEvent")] string EntryEvent,
 	[property: DataMember(Name = "stopLoss")] decimal StopLoss,
 	[property: DataMember(Name = "takeProfit")] decimal TakeProfit);

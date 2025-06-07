@@ -32,7 +32,7 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
 
 	private async Task<INewsProcessorResult> SafeProcessNewsAsync(string newsUrl)
 	{
-		var userInputText = GptPrompts.NewsToHypothesis.Replace("{{URL}}", newsUrl);
+		var userInputText = GptPrompts.NewsToHypothesis.Replace("{{ URL }}", newsUrl);
 
 		OpenAIResponse openAiResponse = await _openAiResponseClient.CreateResponseAsync(
 			userInputText: userInputText,
@@ -47,7 +47,7 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
 		return AnalyzeMessageResponseText(messageResponseText);
 	}
 
-	private static INewsProcessorResult AnalyzeMessageResponseText(string messageResponseText)
+	private static NewsProcessorSuccessResult AnalyzeMessageResponseText(string messageResponseText)
 	{
 		var options = new JsonSerializerOptions
 		{

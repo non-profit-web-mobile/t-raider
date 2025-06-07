@@ -2,8 +2,7 @@ namespace Model.Domain;
 
 public enum ActionType
 {
-	Buy,
+	Long,
 	Short,
-	Hold,
-	Other
+	Hold
 }
