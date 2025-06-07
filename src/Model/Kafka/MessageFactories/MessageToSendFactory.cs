@@ -54,7 +54,7 @@ public class MessageToSendFactory : IMessageToSendFactory
 
 	private static string FormatFinalMessage(List<string> blocks, NewsAnalyze newsAnalyze)
 	{
-		return string.Join("r\n", blocks) +
+		return string.Join("\r\n", blocks) +
 		       $"📰 Событие: [{newsAnalyze.Brief}]({newsAnalyze.SourceUrl})";
 	}
 
