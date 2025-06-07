@@ -1,6 +1,8 @@
 namespace Model.Domain;
 
 public record NewsProcessorSuccessResult(
-    string newsUrl,
-    NewsAnalyze newsAnalyze
-): INewsProcessorResult;
+    string NewsUrl,
+    NewsAnalyze NewsAnalyze,
+    int UsageTotalTokenCount,
+    TimeSpan ProcessingDurationTime
+) : INewsProcessorResult;

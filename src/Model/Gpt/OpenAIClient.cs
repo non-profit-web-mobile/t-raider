@@ -1,4 +1,5 @@
 using System.ClientModel;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
@@ -22,7 +23,7 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
     {
         try
         {
-            return await SafeProcessNewsAsync(newsUrl);
+            return await ProcessNewsSafeAsync(newsUrl);
         }
         catch (Exception exception)
         {
@@ -30,8 +31,10 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
         }
     }
 
-    private async Task<INewsProcessorResult> SafeProcessNewsAsync(string newsUrl)
+    private async Task<INewsProcessorResult> ProcessNewsSafeAsync(string newsUrl)
     {
+        var stopwatch = Stopwatch.StartNew();
+
         var userInputText = GptPrompts.NewsToHypothesis.Replace("{{ URL }}", newsUrl);
 
         OpenAIResponse openAiResponse = await _openAiResponseClient.CreateResponseAsync(
@@ -46,7 +49,11 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
 
         var newsAnalyze = AnalyzeMessageResponseText(messageResponseText);
 
-        return new NewsProcessorSuccessResult(newsUrl, newsAnalyze);
+        return new NewsProcessorSuccessResult(
+            NewsUrl: newsUrl,
+            NewsAnalyze: newsAnalyze,
+            UsageTotalTokenCount: openAiResponse.Usage.TotalTokenCount,
+            ProcessingDurationTime: stopwatch.Elapsed);
     }
 
     private static NewsAnalyze AnalyzeMessageResponseText(string messageResponseText)

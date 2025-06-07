@@ -7,6 +7,6 @@ public class HypothesesMessageMessageFactory : IHypothesesMessageMessageFactory
 {
     public HypothesesMessage Create(NewsProcessorSuccessResult newsProcessorSuccessResult)
     {
-        return new HypothesesMessage(newsProcessorSuccessResult.newsAnalyze);
+        return new HypothesesMessage(newsProcessorSuccessResult.NewsAnalyze);
     }
 }
