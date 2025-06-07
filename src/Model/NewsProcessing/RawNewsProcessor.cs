@@ -5,7 +5,11 @@ using Model.Kafka.Messages;
 
 namespace Model.NewsProcessing;
 
-public class RawNewsProcessor(IGptClient gptClient, IKafkaProducer kafkaProducer) : IRawNewsProcessor
+public class RawNewsProcessor(
+    IGptClient gptClient,
+    IKafkaProducer kafkaProducer,
+    ITopicInfoProvider topicInfoProvider,
+    IKafkaMessageSerializer kafkaMessageSerializer) : IRawNewsProcessor
 {
     public async Task ProcessAsync(RawNewsMessage rawNewsMessage)
     {
@@ -24,9 +28,14 @@ public class RawNewsProcessor(IGptClient gptClient, IKafkaProducer kafkaProducer
         }
     }
 
-    private async Task PublishHypothesesAsync(INewsProcessorResult result)
+    private async Task PublishHypothesesAsync(NewsProcessorSuccessResult result)
     {
-        // await kafkaProducer.ProduceAsync()
+        var topicInfo = topicInfoProvider.GetHypothesesTopicInfo();
+        var key = Guid.NewGuid().ToString();
+        var message = new HypothesesMessage(result.newsAnalyze);
+        var serializedMessage = kafkaMessageSerializer.Serialize(message);
+        
+        await kafkaProducer.ProduceAsync(topicInfo, key, serializedMessage);
     }
 
     private async Task PublishRawNewsSuccessProcessingSignalAsync(NewsProcessorSuccessResult result)
