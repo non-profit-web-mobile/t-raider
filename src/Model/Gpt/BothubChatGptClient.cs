@@ -42,7 +42,7 @@ namespace Model.Gpt
                 .GetString();
 
             if (string.IsNullOrWhiteSpace(content))
-                return new ErrorResult("Empty response from model");
+                return new NewsProcessorErrorResult("Empty response from model");
             try
             {
                 var options = new JsonSerializerOptions
@@ -50,15 +50,15 @@ namespace Model.Gpt
                     PropertyNameCaseInsensitive = true,
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
                 };
-                var success = JsonSerializer.Deserialize<SuccessResult>(content, options);
+                var success = JsonSerializer.Deserialize<NewsProcessorSuccessResult>(content, options);
                 if (success != null)
                     return success;
                 else
-                    return new ErrorResult(content);
+                    return new NewsProcessorErrorResult(content);
             }
             catch (Exception)
             {
-                return new ErrorResult(content);
+                return new NewsProcessorErrorResult(content);
             }
         }
     }

@@ -37,11 +37,11 @@ namespace Model.Gpt
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             };
 
-            var success = JsonSerializer.Deserialize<SuccessResult>(messageResponseText, options);
+            var success = JsonSerializer.Deserialize<NewsProcessorSuccessResult>(messageResponseText, options);
             if (success != null)
                 return success;
 
-            return new ErrorResult(messageResponseText);
+            return new NewsProcessorErrorResult(messageResponseText);
         }
 
         private static string GetMessageResponseItemContent(MessageResponseItem messageResponseItem)
