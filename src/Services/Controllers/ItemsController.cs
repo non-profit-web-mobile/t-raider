@@ -31,6 +31,7 @@ public class ItemsController(
 			TelegramId = 1,
 			StreamEnabled = true,
 			SummaryEnabled = true,
+			Confidence = 1,
 			Tickers = new List<Ticker>
 			{
 				new()

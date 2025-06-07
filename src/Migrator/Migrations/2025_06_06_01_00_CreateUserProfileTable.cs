@@ -16,6 +16,7 @@ public class CreateUserProfileTable : MigrationBase
 				table.WithColumn("TelegramId").AsInt64().NotNullable();
 				table.WithColumn("StreamEnabled").AsBoolean().NotNullable();
 				table.WithColumn("SummaryEnabled").AsBoolean().NotNullable();
+				table.WithColumn("Confidence").AsDouble().NotNullable();
 			});
 	}
 }

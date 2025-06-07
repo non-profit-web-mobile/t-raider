@@ -8,5 +8,7 @@ public class UserProfile : EntityBase<int>
 
 	public required bool SummaryEnabled { get; set; }
 
+	public required double Confidence { get; set; }
+
 	public required ICollection<Ticker> Tickers { get; set; }
 }
