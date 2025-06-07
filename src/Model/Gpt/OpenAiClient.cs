@@ -7,7 +7,7 @@ using OpenAI.Responses;
 
 namespace Model.Gpt
 {
-    public class OpenAIClient(string apiKey) : IGptClient
+    public class OpenAiClient(string apiKey) : IGptClient
     {
         private readonly OpenAIResponseClient _openAiResponseClient = new(
             "gpt-4.1",
