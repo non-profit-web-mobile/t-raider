@@ -1,4 +1,5 @@
 using Model.Data;
+using Model.Gpt;
 using Model.Kafka;
 using Worker.Hypotheses;
 using Worker.RawNews;
@@ -11,6 +12,7 @@ public static class ServiceCollectionExtensions
 	{
 		services.AddKafka(configuration);
 		services.AddData(configuration);
+		services.AddGpt(configuration);
 		services.AddRawNews();
 		services.AddHypotheses();
 	}
