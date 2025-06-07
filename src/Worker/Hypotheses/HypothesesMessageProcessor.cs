@@ -2,6 +2,7 @@ using Confluent.Kafka;
 using Model.Data;
 using Model.Domain;
 using Model.Kafka;
+using Model.Kafka.MessageFactories;
 using Model.Kafka.Messages;
 
 namespace Worker.Hypotheses;
@@ -10,7 +11,8 @@ public class HypothesesMessageProcessor(
 	ITopicInfoProvider topicInfoProvider,
 	IKafkaMessageSerializer kafkaMessageSerializer,
 	IKafkaProducer kafkaProducer,
-	IDataExecutionContext dataExecutionContext)
+	IDataExecutionContext dataExecutionContext,
+	IMessageToSendFactory kafkaMessageToSendFactory)
 	: IKafkaMessageProcessor<HypothesesMessage>
 {
 	public HypothesesMessage Deserialize(ConsumeResult<string, string> consumeResult)
@@ -49,9 +51,9 @@ public class HypothesesMessageProcessor(
 
 		var messages = hypothesesForUser
 			.GroupBy(x => x.Hypotheses, new HypothesesHashSetEqualityComparer())
-			.Select(x => new HypothesesForUsersMessage(
-				x.Select(y => y.TelegramId).ToList(),
-				message.NewsAnalyze with { Hypotheses = x.Key.ToList() }))
+			.Select(x => kafkaMessageToSendFactory
+				.Create(telegramIds: x.Select(y => y.TelegramId).ToList(),
+					newsAnalyze: message.NewsAnalyze with { Hypotheses = x.Key.ToList() }))
 			.ToList();
 
 		var topicInfo = topicInfoProvider.GetHypothesesForUsersTopicInfo();

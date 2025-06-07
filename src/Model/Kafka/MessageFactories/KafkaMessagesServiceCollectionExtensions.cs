@@ -9,5 +9,6 @@ public static class KafkaMessagesServiceCollectionExtensions
     {
         services.AddSingleton<IHypothesesMessageMessageFactory, HypothesesMessageMessageFactory>();
         services.AddSingleton<IAdminSignalMessageFactory, AdminSignalMessageFactory>();
+        services.AddSingleton<IMessageToSendFactory, MessageToSendFactory>();
     }
 }
