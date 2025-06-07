@@ -13,6 +13,6 @@ public static class GptServiceCollectionExtensions
 			.ValidateDataAnnotations()
 			.ValidateOnStart();
 
-		services.AddSingleton<IGptClient, OpenAiClient>();
+		services.AddSingleton<IGptClient, OpenAIClient>();
 	}
 }
