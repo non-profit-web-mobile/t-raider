@@ -41,13 +41,15 @@ public class MessageToSendFactory : IMessageToSendFactory
 	{
 		var actionText = MapActionToText(hypothesis.Action);
 		var stopLossTakeProfit = hypothesis.Action != "Hold"
-			? $"\t⛔️ Стоп-лосс: {hypothesis.StopLoss}\n\t🎯 Тейк-профит: {hypothesis.TakeProfit}\n"
+			? $"⛔️ Стоп-лосс: {hypothesis.StopLoss}\r\n" +
+			  $"🎯 Тейк-профит: {hypothesis.TakeProfit}\r\n"
 			: string.Empty;
-		return $"{actionText} {hypothesis.Ticker} (tbank)\n" +
+		
+		return $"{actionText} {hypothesis.Ticker}\r\n" +
 		       stopLossTakeProfit +
-		       $"\t⏳ Срок актуальности: {hypothesis.Period}\n\n" +
-		       $"💡 Идея: {hypothesis.Tactics}\n" +
-		       $"📈 Вероятность: 60%\n";
+		       $"⏳ Срок актуальности: {hypothesis.Period}\r\n\r\n" +
+		       $"💡 Идея: {hypothesis.Tactics}\r\n" +
+		       $"📈 Вероятность: 60%\r\n";
 	}
 
 	private static string FormatFinalMessage(List<string> blocks, NewsAnalyze newsAnalyze)
