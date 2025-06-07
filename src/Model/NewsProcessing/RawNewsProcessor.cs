@@ -34,7 +34,3 @@ public class RawNewsProcessor(IGptClient gptClient) : IRawNewsProcessor
     {
     }
 }
-
-public interface IRawNewsProcessor
-{
-}
