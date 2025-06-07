@@ -23,6 +23,7 @@ public class ItemMessageProcessor(
 			StreamEnabled = true,
 			SummaryEnabled = true,
 			Confidence = 1,
+			Session = "{}",
 			Tickers = new List<Ticker>
 			{
 				new()

@@ -10,5 +10,7 @@ public class UserProfile : EntityBase<int>
 
 	public required double Confidence { get; set; }
 
+	public required string Session { get; set; }
+
 	public required ICollection<Ticker> Tickers { get; set; }
 }
