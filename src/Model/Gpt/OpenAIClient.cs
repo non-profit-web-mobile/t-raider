@@ -23,9 +23,9 @@ namespace Model.Gpt
             {
                 return await SafeProcessNewsAsync(newsUrl);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                return new NewsProcessorErrorResult(e.Message);
+                return NewsProcessorErrorResultFactory.Create(exception);
             }
         }
 
