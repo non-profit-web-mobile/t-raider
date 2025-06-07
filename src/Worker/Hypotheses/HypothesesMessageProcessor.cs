@@ -1,6 +1,5 @@
 using Confluent.Kafka;
 using Model.Data;
-using Model.Data.Repositories;
 using Model.Domain;
 using Model.Kafka;
 using Model.Kafka.Messages;
@@ -27,31 +26,28 @@ public class HypothesesMessageProcessor(
 		IRepositoryRegistry repositoryRegistry,
 		CancellationToken cancellationToken)
 	{
-		var filters = message.NewsAnalyze.Hypotheses
-			.Select(x => new UserProfileBatchFilter(x.Ticker, x.Probability))
-			.ToHashSet();
+		var userProfiles = await repositoryRegistry.UserProfileRepository
+			.GetManyAsync(cancellationToken);
 
-		var userProfiles = await repositoryRegistry.UserProfileRepository.GetBatchAsync(filters, cancellationToken);
-
-		var hypothesesByUsers = new List<HypothesisToUser>();
+		var hypothesesForUsers = new List<HypothesisForUser>();
 		foreach (var hypothesis in message.NewsAnalyze.Hypotheses)
 		{
 			foreach (var userProfile in userProfiles)
 			{
-				if (userProfile.Confidence >= hypothesis.Probability
-				    && userProfile.Tickers.Any(t => t.Symbol == hypothesis.Ticker))
+				if (userProfile.Confidence < hypothesis.Probability
+					&& userProfile.Tickers.Any(t => t.Symbol == hypothesis.Ticker))
 				{
-					hypothesesByUsers.Add(new HypothesisToUser(userProfile.TelegramId, hypothesis));
+					hypothesesForUsers.Add(new HypothesisForUser(userProfile.TelegramId, hypothesis));
 				}
 			}
 		}
 
-		var hypothesesByUser = hypothesesByUsers
+		var hypothesesForUser = hypothesesForUsers
 			.GroupBy(x => x.TelegramId)
-			.Select(x => new HypothesesToUser(x.Key, x.Select(y => y.Hypothesis).ToHashSet()))
+			.Select(x => new HypothesesForUser(x.Key, x.Select(y => y.Hypothesis).ToHashSet()))
 			.ToList();
 
-		var messages = hypothesesByUser
+		var messages = hypothesesForUser
 			.GroupBy(x => x.Hypotheses)
 			.Select(x => new HypothesesForUsersMessage(
 				x.Select(y => y.TelegramId).ToList(),
@@ -60,17 +56,17 @@ public class HypothesesMessageProcessor(
 
 		var topicInfo = topicInfoProvider.GetHypothesesForUsersTopicInfo();
 
-		var tasks = messages.Select(msg =>
+		var tasks = messages.Select(x =>
 		{
 			var key = Guid.NewGuid().ToString();
-			var serializedMessage = kafkaMessageSerializer.Serialize(msg);
+			var serializedMessage = kafkaMessageSerializer.Serialize(x);
 			return kafkaProducer.ProduceAsync(topicInfo, key, serializedMessage, cancellationToken);
 		});
 
 		await Task.WhenAll(tasks);
 	}
 
-	private record HypothesisToUser(long TelegramId, Hypothesis Hypothesis);
+	private record HypothesisForUser(long TelegramId, Hypothesis Hypothesis);
 
-	private record HypothesesToUser(long TelegramId, HashSet<Hypothesis> Hypotheses);
+	private record HypothesesForUser(long TelegramId, HashSet<Hypothesis> Hypotheses);
 }

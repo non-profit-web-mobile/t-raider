@@ -14,7 +14,8 @@ public class KafkaConsumer<TMessage>(
 		{
 			BootstrapServers = topicInfo.BootstrapServers,
 			GroupId = groupId,
-			AutoOffsetReset = AutoOffsetReset.Earliest
+			AutoOffsetReset = AutoOffsetReset.Earliest,
+			EnableAutoCommit = false
 		};
 
 		using var consumer = new ConsumerBuilder<string, string>(consumerConfig).Build();
@@ -25,6 +26,7 @@ public class KafkaConsumer<TMessage>(
 			var consumeResult = consumer.Consume(cancellationToken);
 			var message =  processor.Deserialize(consumeResult);
 			await processor.ProduceAsync(message, cancellationToken);
+			consumer.Commit(consumeResult);
 		}
 	}
 }
