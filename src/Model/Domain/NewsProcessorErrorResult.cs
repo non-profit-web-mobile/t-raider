@@ -1,3 +1,3 @@
 namespace Model.Domain;
 
-public record NewsProcessorErrorResult(string ErrorMessage): INewsProcessorResult;
+public record NewsProcessorErrorResult(string NewsUrl, string ErrorMessage) : INewsProcessorResult;
