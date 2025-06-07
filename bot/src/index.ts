@@ -4,12 +4,33 @@ import { logger } from './utils/logger';
 import { connectDB } from './database/connection';
 import { connectKafka } from './kafka/connection';
 import { config } from './config/config';
+import { ExtraSetWebhook } from 'telegraf/typings/telegram-types';
 
 const app = express();
 const bot = new Telegraf(config.BOT_TOKEN);
 
 // Middleware для парсинга JSON
 app.use(express.json());
+
+const validateWebhookSecret = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (!config.WEBHOOK_SECRET) {
+    logger.warn('WEBHOOK_SECRET not configured, skipping validation');
+    return next();
+  }
+
+  const receivedSecret = req.headers['x-telegram-bot-api-secret-token'];
+  
+  if (!receivedSecret || receivedSecret !== config.WEBHOOK_SECRET) {
+    logger.warn('Invalid or missing webhook secret token', {
+      ip: req.ip,
+      headers: req.headers,
+    });
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  
+  next();
+};
 
 // Обработчик всех сообщений - отвечает "hello"
 bot.on('message', async (ctx) => {
@@ -22,7 +43,7 @@ bot.on('message', async (ctx) => {
 });
 
 // Webhook endpoint
-app.use(bot.webhookCallback('/webhook'));
+app.use('/webhook', validateWebhookSecret, bot.webhookCallback());
 
 // Health check endpoint
 app.get('/health', (_, res) => {
@@ -35,13 +56,20 @@ async function startServer() {
     await connectDB();
     logger.info('Database connected successfully');
 
-    // Подключение к Kafka
-    await connectKafka();
-    logger.info('Kafka connected successfully');
+    // // Подключение к Kafka
+    // await connectKafka();
+    // logger.info('Kafka connected successfully');
 
     // Установка вебхука
     const webhookUrl = `${config.WEBHOOK_URL}/webhook`;
-    await bot.telegram.setWebhook(webhookUrl);
+
+    const webhookOptions: ExtraSetWebhook = {};
+
+    if (config.WEBHOOK_SECRET !== '') {
+      webhookOptions.secret_token = config.WEBHOOK_SECRET;
+    }
+
+    await bot.telegram.setWebhook(webhookUrl, webhookOptions);
     logger.info(`Webhook set to: ${webhookUrl}`);
 
     // Запуск сервера
