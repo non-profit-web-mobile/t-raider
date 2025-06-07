@@ -16,5 +16,7 @@ public static class KafkaServiceCollectionExtensions
 		services.AddSingleton<ITopicInfoProvider, TopicInfoProvider>();
 		services.AddSingleton<IKafkaProducer, KafkaProducer>();
 		services.AddSingleton<IKafkaMessageSerializer, KafkaMessageSerializer>();
+
+		services.AddSingleton<IKafkaConsumerFactory, KafkaConsumerFactory>();
 	}
 }

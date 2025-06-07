@@ -13,7 +13,7 @@ public class KafkaProducer(ILogger<KafkaProducer> logger) : IKafkaProducer
 	private readonly Lock _lock = new();
 	private bool _disposed;
 
-	public async Task ProduceAsync(TopicInfo topicInfo, string key, string message)
+	public async Task ProduceAsync(TopicInfo topicInfo, string key, string message, CancellationToken cancellationToken)
 	{
 		var asyncPolicy = GetAsyncPolicy();
 		var producer = GetOrCreateProducer(topicInfo.BootstrapServers);
@@ -29,7 +29,7 @@ public class KafkaProducer(ILogger<KafkaProducer> logger) : IKafkaProducer
 					Timestamp = new Timestamp(DateTime.UtcNow)
 				};
 
-				var deliveryResult = await producer.ProduceAsync(topicInfo.TopicName, kafkaMessage);
+				var deliveryResult = await producer.ProduceAsync(topicInfo.TopicName, kafkaMessage, cancellationToken);
 				
 				if (deliveryResult.Status != PersistenceStatus.Persisted)
 					throw new InvalidOperationException($"Message was not persisted. Status: {deliveryResult.Status}.");
