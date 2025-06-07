@@ -19,6 +19,18 @@ namespace Model.Gpt
 
         public async Task<INewsProcessorResult> ProcessNewsAsync(string newsUrl)
         {
+            try
+            {
+                return await SafeProcessNewsAsync(newsUrl);
+            }
+            catch (Exception e)
+            {
+                return new NewsProcessorErrorResult(e.Message);
+            }
+        }
+
+        private async Task<INewsProcessorResult> SafeProcessNewsAsync(string newsUrl)
+        {
             var userInputText = GptPrompts.NewsToHypothesis.Replace("{{URL}}", newsUrl);
 
             OpenAIResponse openAiResponse = await _openAiResponseClient.CreateResponseAsync(
@@ -30,18 +42,29 @@ namespace Model.Gpt
 
             var messageResponseItem = GetSingleMessageResponseItem(openAiResponse);
             var messageResponseText = GetMessageResponseItemContent(messageResponseItem);
+            return AnalyzeMessageResponseText(messageResponseText);
+        }
 
-            var options = new JsonSerializerOptions
+        private INewsProcessorResult AnalyzeMessageResponseText(string messageResponseText)
+        {
+            try
             {
-                PropertyNameCaseInsensitive = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            };
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                };
 
-            var success = JsonSerializer.Deserialize<NewsProcessorSuccessResult>(messageResponseText, options);
-            if (success != null)
-                return success;
+                var success = JsonSerializer.Deserialize<NewsProcessorSuccessResult>(messageResponseText, options);
+                if (success != null)
+                    return success;
 
-            return new NewsProcessorErrorResult(messageResponseText);
+                return new NewsProcessorErrorResult(messageResponseText);
+            }
+            catch (Exception e)
+            {
+                return new NewsProcessorErrorResult(e.Message);
+            }
         }
 
         private static string GetMessageResponseItemContent(MessageResponseItem messageResponseItem)

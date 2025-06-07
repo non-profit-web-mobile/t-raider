@@ -4,7 +4,7 @@ using Model.Kafka.Messages;
 
 namespace Model.NewsProcessing;
 
-public class RawNewsProcessor(IGptClient gptClient) : IRawNewsProcessor
+public class RawNewsProcessor(IGptClient gptClient, IKafkaProducer kafkaProducer) : IRawNewsProcessor
 {
     public async Task ProcessAsync(RawNewsMessage rawNewsMessage)
     {
@@ -23,15 +23,18 @@ public class RawNewsProcessor(IGptClient gptClient) : IRawNewsProcessor
         }
     }
 
-    private async Task PublishHypothesesAsync(INewsProcessorResult newsProcessingResult)
+    private async Task PublishHypothesesAsync(INewsProcessorResult result)
     {
+        // await kafkaProducer.ProduceAsync()
     }
 
     private async Task PublishRawNewsSuccessProcessingSignalAsync(NewsProcessorSuccessResult result)
     {
+        // await kafkaProducer.ProduceAsync()
     }
 
     private async Task PublishRawNewsFailedProcessingSignalAsync(NewsProcessorErrorResult result)
     {
+        // await kafkaProducer.ProduceAsync()
     }
 }
