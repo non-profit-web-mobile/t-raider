@@ -1,5 +1,6 @@
 using Model.Domain;
 using Model.Gpt;
+using Model.Kafka.Messages;
 
 namespace Model.NewsProcessing;
 
