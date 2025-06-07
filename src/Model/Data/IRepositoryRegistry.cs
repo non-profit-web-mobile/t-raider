@@ -4,5 +4,5 @@ namespace Model.Data;
 
 public interface IRepositoryRegistry
 {
-	IItemsRepository Items { get; }
+	IUserProfileRepository UserProfileRepository { get; }
 }
