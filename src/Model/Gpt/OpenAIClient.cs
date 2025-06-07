@@ -55,16 +55,16 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
 			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
 		};
 
-		NewsProcessorSuccessResult? newsProcessorSuccessResult;
+		NewsAnalyze? newsAnalyze;
 		try
 		{
-			newsProcessorSuccessResult = JsonSerializer.Deserialize<NewsProcessorSuccessResult>(
+			newsAnalyze = JsonSerializer.Deserialize<NewsAnalyze>(
 				messageResponseText,
 				options);
 		}
-		catch (Exception e)
+		catch (Exception exception)
 		{
-			throw new InvalidOperationException("Failed to deserialize response")
+			throw new InvalidOperationException("Failed to deserialize response", exception)
 			{
 				Data =
 				{
@@ -73,9 +73,9 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
 			};
 		}
 
-		if (newsProcessorSuccessResult is null)
+		if (newsAnalyze is null)
 		{
-			throw new InvalidOperationException("Response after deserialization is null")
+			throw new InvalidOperationException("NewsAnalyze after deserialization is null")
 			{
 				Data =
 				{
@@ -84,7 +84,7 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
 			};
 		}
 
-		return newsProcessorSuccessResult;
+		return new NewsProcessorSuccessResult(newsAnalyze);
 	}
 
 	private static string GetMessageResponseItemContent(MessageResponseItem messageResponseItem)
