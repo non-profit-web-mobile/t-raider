@@ -5,7 +5,7 @@ using Model.Domain;
 
 namespace Model.Gpt
 {
-	public class BothubChatGptClient
+	public class BothubChatGptClient: IGptClient
 	{
 		private readonly HttpClient _httpClient;
 		private readonly string _prompt;
