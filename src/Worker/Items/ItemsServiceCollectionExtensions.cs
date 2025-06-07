@@ -9,6 +9,6 @@ public static class ItemsServiceCollectionExtensions
 	{
 		services.AddHostedService<ItemsTask>();
 		services.AddScoped<ItemsService>();
-		services.AddScoped<IKafkaMessageProcessor<ItemMessage>, ItemsMessageProcessor>();
+		services.AddScoped<IKafkaMessageProcessor<ItemMessage>, ItemMessageProcessor>();
 	}
 }

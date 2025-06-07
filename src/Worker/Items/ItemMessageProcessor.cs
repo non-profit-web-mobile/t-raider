@@ -7,7 +7,7 @@ using IsolationLevel = System.Data.IsolationLevel;
 
 namespace Worker.Items;
 
-public class ItemsMessageProcessor(
+public class ItemMessageProcessor(
 	IKafkaMessageSerializer kafkaMessageSerializer,
 	IDataExecutionContext dataExecutionContext)
 	: IKafkaMessageProcessor<ItemMessage>
