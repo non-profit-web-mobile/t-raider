@@ -10,110 +10,112 @@ namespace Model.Gpt;
 
 public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
 {
-	private readonly OpenAIResponseClient _openAiResponseClient = new(
-		"gpt-4.1",
-		new ApiKeyCredential(gptOptions.Value.ApiKey),
-		new OpenAIClientOptions
-		{
-			Endpoint = new Uri("https://api.openai.com/v1")
-		});
+    private readonly OpenAIResponseClient _openAiResponseClient = new(
+        "gpt-4.1",
+        new ApiKeyCredential(gptOptions.Value.ApiKey),
+        new OpenAIClientOptions
+        {
+            Endpoint = new Uri("https://api.openai.com/v1")
+        });
 
-	public async Task<INewsProcessorResult> ProcessNewsAsync(string newsUrl)
-	{
-		try
-		{
-			return await SafeProcessNewsAsync(newsUrl);
-		}
-		catch (Exception exception)
-		{
-			return NewsProcessorErrorResultFactory.Create(exception);
-		}
-	}
+    public async Task<INewsProcessorResult> ProcessNewsAsync(string newsUrl)
+    {
+        try
+        {
+            return await SafeProcessNewsAsync(newsUrl);
+        }
+        catch (Exception exception)
+        {
+            return NewsProcessorErrorResultFactory.Create(exception);
+        }
+    }
 
-	private async Task<INewsProcessorResult> SafeProcessNewsAsync(string newsUrl)
-	{
-		var userInputText = GptPrompts.NewsToHypothesis.Replace("{{ URL }}", newsUrl);
+    private async Task<INewsProcessorResult> SafeProcessNewsAsync(string newsUrl)
+    {
+        var userInputText = GptPrompts.NewsToHypothesis.Replace("{{ URL }}", newsUrl);
 
-		OpenAIResponse openAiResponse = await _openAiResponseClient.CreateResponseAsync(
-			userInputText: userInputText,
-			new ResponseCreationOptions
-			{
-				Tools = {ResponseTool.CreateWebSearchTool()},
-			});
+        OpenAIResponse openAiResponse = await _openAiResponseClient.CreateResponseAsync(
+            userInputText: userInputText,
+            new ResponseCreationOptions
+            {
+                Tools = { ResponseTool.CreateWebSearchTool() },
+            });
 
-		var messageResponseItem = GetSingleMessageResponseItem(openAiResponse);
-		var messageResponseText = GetMessageResponseItemContent(messageResponseItem);
+        var messageResponseItem = GetSingleMessageResponseItem(openAiResponse);
+        var messageResponseText = GetMessageResponseItemContent(messageResponseItem);
 
-		return AnalyzeMessageResponseText(messageResponseText);
-	}
+        var newsAnalyze = AnalyzeMessageResponseText(messageResponseText);
 
-	private static NewsProcessorSuccessResult AnalyzeMessageResponseText(string messageResponseText)
-	{
-		var options = new JsonSerializerOptions
-		{
-			PropertyNameCaseInsensitive = true,
-			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-		};
+        return new NewsProcessorSuccessResult(newsUrl, newsAnalyze);
+    }
 
-		NewsAnalyze? newsAnalyze;
-		try
-		{
-			newsAnalyze = JsonSerializer.Deserialize<NewsAnalyze>(
-				messageResponseText,
-				options);
-		}
-		catch (Exception exception)
-		{
-			throw new InvalidOperationException("Failed to deserialize response", exception)
-			{
-				Data =
-				{
-					["Response"] = messageResponseText
-				}
-			};
-		}
+    private static NewsAnalyze AnalyzeMessageResponseText(string messageResponseText)
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
 
-		if (newsAnalyze is null)
-		{
-			throw new InvalidOperationException("NewsAnalyze after deserialization is null")
-			{
-				Data =
-				{
-					["Response"] = messageResponseText
-				}
-			};
-		}
+        NewsAnalyze? newsAnalyze;
+        try
+        {
+            newsAnalyze = JsonSerializer.Deserialize<NewsAnalyze>(
+                messageResponseText,
+                options);
+        }
+        catch (Exception exception)
+        {
+            throw new InvalidOperationException("Failed to deserialize response", exception)
+            {
+                Data =
+                {
+                    ["Response"] = messageResponseText
+                }
+            };
+        }
 
-		return new NewsProcessorSuccessResult(newsAnalyze);
-	}
+        if (newsAnalyze is null)
+        {
+            throw new InvalidOperationException("NewsAnalyze after deserialization is null")
+            {
+                Data =
+                {
+                    ["Response"] = messageResponseText
+                }
+            };
+        }
 
-	private static string GetMessageResponseItemContent(MessageResponseItem messageResponseItem)
-	{
-		if (messageResponseItem == null)
-			throw new ArgumentNullException(nameof(messageResponseItem), "MessageResponseItem is null");
+        return newsAnalyze;
+    }
 
-		if (messageResponseItem.Content == null || !messageResponseItem.Content.Any())
-			throw new InvalidOperationException("MessageResponseItem.Content is null or empty");
+    private static string GetMessageResponseItemContent(MessageResponseItem messageResponseItem)
+    {
+        if (messageResponseItem == null)
+            throw new ArgumentNullException(nameof(messageResponseItem), "MessageResponseItem is null");
 
-		var firstContent = messageResponseItem.Content.FirstOrDefault();
-		if (firstContent == null || string.IsNullOrWhiteSpace(firstContent.Text))
-			throw new InvalidOperationException("MessageResponseItem.Content does not contain valid text");
+        if (messageResponseItem.Content == null || !messageResponseItem.Content.Any())
+            throw new InvalidOperationException("MessageResponseItem.Content is null or empty");
 
-		return firstContent.Text;
-	}
+        var firstContent = messageResponseItem.Content.FirstOrDefault();
+        if (firstContent == null || string.IsNullOrWhiteSpace(firstContent.Text))
+            throw new InvalidOperationException("MessageResponseItem.Content does not contain valid text");
 
-	private static MessageResponseItem GetSingleMessageResponseItem(OpenAIResponse response)
-	{
-		var messages = response.OutputItems
-			.OfType<MessageResponseItem>()
-			.ToList();
+        return firstContent.Text;
+    }
 
-		return messages.Count switch
-		{
-			0 => throw new InvalidOperationException("No assistant message found in the response"),
-			> 1 => throw new InvalidOperationException(
-				$"Expected exactly one assistant message, but found {messages.Count}"),
-			_ => messages[0]
-		};
-	}
+    private static MessageResponseItem GetSingleMessageResponseItem(OpenAIResponse response)
+    {
+        var messages = response.OutputItems
+            .OfType<MessageResponseItem>()
+            .ToList();
+
+        return messages.Count switch
+        {
+            0 => throw new InvalidOperationException("No assistant message found in the response"),
+            > 1 => throw new InvalidOperationException(
+                $"Expected exactly one assistant message, but found {messages.Count}"),
+            _ => messages[0]
+        };
+    }
 }
