@@ -1,6 +1,10 @@
 namespace Model.Domain;
 
-public record NewsProcessingResult(
+public record NewsProcessingResult(SuccessResult? SuccessResult, ErrorResult? ErrorResult);
+
+public record ErrorResult(string ErrorMessage);
+
+public record SuccessResult(
 	string Brief,
 	Uri SourceUrl,
 	double Newsworthiness,
