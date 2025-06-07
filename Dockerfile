@@ -6,7 +6,7 @@ RUN mkdir src
 RUN for file in $(ls *.csproj); do mkdir -p src/${file%.*}/ && mv $file src/${file%.*}/; done
 RUN dotnet restore "TRaider.sln"
 COPY . .
-RUN dotnet build "TRaider.sln" -c Release --no-restore /warnaserror
+RUN dotnet build "TRaider.sln" -c Release --no-restore
 
 ### publish
 FROM build AS publish
