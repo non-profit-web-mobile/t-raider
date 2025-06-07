@@ -5,6 +5,7 @@ dotenv.config();
 export const config = {
   BOT_TOKEN: process.env.BOT_TOKEN || '',
   WEBHOOK_URL: process.env.WEBHOOK_URL || '',
+  WEBHOOK_SECRET: process.env.WEBHOOK_SECRET || '',
   PORT: parseInt(process.env.PORT || '3000', 10),
   
   // Database
