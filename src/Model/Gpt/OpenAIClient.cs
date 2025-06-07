@@ -74,7 +74,7 @@ namespace Model.Gpt
 
             if (newsProcessorSuccessResult is null)
             {
-                throw new InvalidOperationException("Failed to deserialize response")
+                throw new InvalidOperationException("Response after deserialization is null")
                 {
                     Data =
                     {
