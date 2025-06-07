@@ -1,4 +1,4 @@
-namespace Worker.NewsProcessing.Results;
+namespace Model.NewsProcessing.Results;
 
 public interface INewsProcessorResult
 {

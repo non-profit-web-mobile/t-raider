@@ -1,6 +1,6 @@
-using Worker.NewsProcessing.Results;
+using Model.NewsProcessing.Results;
 
-namespace Worker.NewsProcessing;
+namespace Model.NewsProcessing;
 
 public class NewsProcessor
 {

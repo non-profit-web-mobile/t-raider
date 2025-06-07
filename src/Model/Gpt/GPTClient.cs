@@ -1,9 +1,9 @@
-using OpenAI;
-using OpenAI.Chat;
 using System.Text.Json;
 using Model.Domain;
+using OpenAI;
+using OpenAI.Chat;
 
-namespace Services
+namespace Model.Gpt
 {
     public class GPTClient
     {
