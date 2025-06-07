@@ -29,4 +29,9 @@
         </Content>
     </ItemGroup>
 
+    <ItemGroup>
+        <None Update="..\..\secrets\secrets.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 </Project>
