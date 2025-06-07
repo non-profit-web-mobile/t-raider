@@ -1,6 +1,7 @@
 using Model.Data;
 using Model.Kafka;
 using Worker.Items;
+using Worker.RawNews;
 
 namespace Worker;
 
@@ -12,5 +13,6 @@ public static class ServiceCollectionExtensions
 		services.AddKafka(configuration);
 		services.AddData(configuration);
 		services.AddItems();
+		services.AddRawNews();
 	}
 }
