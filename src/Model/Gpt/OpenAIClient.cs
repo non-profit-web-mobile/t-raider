@@ -46,26 +46,44 @@ namespace Model.Gpt
             return AnalyzeMessageResponseText(messageResponseText);
         }
 
-        private INewsProcessorResult AnalyzeMessageResponseText(string messageResponseText)
+        private static INewsProcessorResult AnalyzeMessageResponseText(string messageResponseText)
         {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
+            NewsProcessorSuccessResult? newsProcessorSuccessResult;
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-                };
-
-                var success = JsonSerializer.Deserialize<NewsProcessorSuccessResult>(messageResponseText, options);
-                if (success != null)
-                    return success;
-
-                return new NewsProcessorErrorResult(messageResponseText);
+                newsProcessorSuccessResult = JsonSerializer.Deserialize<NewsProcessorSuccessResult>(
+                    messageResponseText,
+                    options);
             }
             catch (Exception e)
             {
-                return new NewsProcessorErrorResult(e.Message);
+                throw new InvalidOperationException("Failed to deserialize response")
+                {
+                    Data =
+                    {
+                        ["Response"] = messageResponseText
+                    }
+                };
             }
+
+            if (newsProcessorSuccessResult is null)
+            {
+                throw new InvalidOperationException("Failed to deserialize response")
+                {
+                    Data =
+                    {
+                        ["Response"] = messageResponseText
+                    }
+                };
+            }
+
+            return newsProcessorSuccessResult;
         }
 
         private static string GetMessageResponseItemContent(MessageResponseItem messageResponseItem)
