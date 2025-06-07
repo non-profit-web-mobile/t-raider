@@ -7,4 +7,6 @@ public class TopicInfoProvider(IOptions<KafkaOptions> kafkaOptions) : ITopicInfo
 	public TopicInfo GetRawNewsTopicInfo() => new(kafkaOptions.Value.BootstrapServers, "RawNews");
 
 	public TopicInfo GetHypothesesTopicInfo() => new(kafkaOptions.Value.BootstrapServers, "Hypotheses");
+
+	public TopicInfo GetHypothesesForUsersTopicInfo() => new(kafkaOptions.Value.BootstrapServers, "HypothesesForUsers");
 }

@@ -5,4 +5,6 @@ public interface ITopicInfoProvider
 	TopicInfo GetRawNewsTopicInfo();
 
 	TopicInfo GetHypothesesTopicInfo();
+
+	TopicInfo GetHypothesesForUsersTopicInfo();
 }

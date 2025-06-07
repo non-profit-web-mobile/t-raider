@@ -39,9 +39,9 @@ public abstract class RepositoryBase<TDbContext, TEntity, TId> : IRepository<TEn
 		await Context.SaveChangesAsync(cancellationToken);
 	}
 
-	public async Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken = default) =>
-		await QuerySet.FirstAsync(x => x.Id.Equals(id), cancellationToken);
+	public async Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken = default)
+		=> await QuerySet.FirstAsync(x => x.Id.Equals(id), cancellationToken);
 
-	public async Task<TEntity?> TryGetByIdAsync(TId id, CancellationToken cancellationToken = default) =>
-		await QuerySet.FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
+	public async Task<TEntity?> TryGetByIdAsync(TId id, CancellationToken cancellationToken = default)
+		=> await QuerySet.FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
 }
