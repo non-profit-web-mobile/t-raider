@@ -15,7 +15,7 @@ public class AdminSignalMessageFactory : IAdminSignalMessageFactory
             $"{processingDurationTime.Milliseconds / 10:D2}";
 
         var message =
-            $"🚀Успешно обработана новость \"{newsProcessorSuccessResult.NewsAnalyze.Brief}\" из источника {newsProcessorSuccessResult.NewsUrl}\r\n" +
+            $"🚀 Успешно обработана новость \"{newsProcessorSuccessResult.NewsAnalyze.Brief}\" из источника {newsProcessorSuccessResult.NewsUrl}\r\n" +
             $"По новости сформулировано {newsProcessorSuccessResult.NewsAnalyze.Hypotheses.Count} гипотез\r\n" +
             $"Потрачено токенов {newsProcessorSuccessResult.UsageTotalTokenCount}, время обработки {formattedProcessingDurationTime}\r\n" +
             $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss (UTC)}";
