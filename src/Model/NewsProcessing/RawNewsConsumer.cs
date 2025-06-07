@@ -1,5 +1,4 @@
 using Model.Domain;
-using Model.NewsProcessing.Results;
 
 namespace Model.NewsProcessing;
 
@@ -14,26 +13,26 @@ public class RawNewsConsumer
         
         switch (processResult)
         {
-            case SuccessNewsProcessorResult successResult:
+            case SuccessResult successResult:
                 await Task.WhenAll(
-                    PublishHypothesesAsync(successResult.Result),
-                    PublishRawNewsSuccessProcessingSignalAsync(newsProcessorRequest, successResult.Result));
+                    PublishHypothesesAsync(successResult),
+                    PublishRawNewsSuccessProcessingSignalAsync(newsProcessorRequest, successResult));
                 break;
-            case FailedNewsProcessorResult failedResult:
-                await PublishRawNewsFailedProcessingSignalAsync(newsProcessorRequest, failedResult.Fails);
+            case ErrorResult failedResult:
+                await PublishRawNewsFailedProcessingSignalAsync(newsProcessorRequest, failedResult);
                 break;
         }
     }
 
-    private async Task PublishHypothesesAsync(NewsProcessingResult newsProcessingResult)
+    private async Task PublishHypothesesAsync(INewsProcessorResult newsProcessingResult)
     {
     }
 
-    private async Task PublishRawNewsSuccessProcessingSignalAsync(NewsProcessorRequest request, NewsProcessingResult newsProcessingResult)
+    private async Task PublishRawNewsSuccessProcessingSignalAsync(NewsProcessorRequest request, INewsProcessorResult newsProcessingResult)
     {
     }
 
-    private async Task PublishRawNewsFailedProcessingSignalAsync(NewsProcessorRequest request, IEnumerable<string> fails)
+    private async Task PublishRawNewsFailedProcessingSignalAsync(NewsProcessorRequest request, INewsProcessorResult newsProcessingResult)
     {
     }
 }

@@ -18,7 +18,7 @@ namespace Model.Gpt
 			_httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
 		}
 
-		public async Task<INewsProcessorResult?> ProcessNewsAsync(string newsUrl)
+		public async Task<INewsProcessorResult> ProcessNewsAsync(string newsUrl)
 		{
 			var promptWithUrl = _prompt.Replace("{{URL}}", newsUrl);
 			var requestBody = new
