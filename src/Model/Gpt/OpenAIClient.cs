@@ -42,6 +42,7 @@ namespace Model.Gpt
 
             var messageResponseItem = GetSingleMessageResponseItem(openAiResponse);
             var messageResponseText = GetMessageResponseItemContent(messageResponseItem);
+
             return AnalyzeMessageResponseText(messageResponseText);
         }
 
