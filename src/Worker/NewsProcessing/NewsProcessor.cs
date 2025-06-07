@@ -1,3 +1,5 @@
+using Worker.NewsProcessing.Results;
+
 namespace Worker.NewsProcessing;
 
 public class NewsProcessor
@@ -8,20 +10,8 @@ public class NewsProcessor
     }
 }
 
-public interface INewsProcessorResult
-{
-    
-}
+public record NewsProcessorRequest(string Link);
 
-public class SuccessNewsProcessorResult
+public record RawNewsMessage
 {
-}
-
-public class FailedNewsProcessorResult
-{
-}
-
-public record NewsProcessorRequest
-{
-    public string Link { get; set; }
 }
