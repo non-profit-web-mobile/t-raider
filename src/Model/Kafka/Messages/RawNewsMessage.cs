@@ -1,3 +1,7 @@
+using System.Runtime.Serialization;
+
 namespace Model.Kafka.Messages;
 
-public record RawNewsMessage(string NewsLink);
+[DataContract]
+public record RawNewsMessage(
+	[property: DataMember(Name = "newsLink")] string NewsLink);

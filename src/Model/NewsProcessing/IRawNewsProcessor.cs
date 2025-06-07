@@ -1,3 +1,5 @@
+using Model.Kafka.Messages;
+
 namespace Model.NewsProcessing;
 
 public interface IRawNewsProcessor
