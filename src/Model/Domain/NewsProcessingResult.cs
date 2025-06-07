@@ -1,8 +1,8 @@
 namespace Model.Domain;
 
-public record NewsProcessingResult(SuccessResult? SuccessResult, ErrorResult? ErrorResult);
+public interface INewsProcessorResult;
 
-public record ErrorResult(string ErrorMessage);
+public record ErrorResult(string ErrorMessage): INewsProcessorResult;
 
 public record SuccessResult(
 	string Brief,
@@ -11,7 +11,7 @@ public record SuccessResult(
 	string Explanation,
 	IReadOnlyList<string> Tickers,
 	IReadOnlyList<Hypothesis> Hypotheses
-);
+): INewsProcessorResult;
 
 public record Hypothesis(
 	IReadOnlyList<TickerInfo> Tickers,

@@ -18,7 +18,7 @@ namespace Model.Gpt
 			_httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
 		}
 
-		public async Task<NewsProcessingResult?> ProcessNewsAsync(string newsUrl)
+		public async Task<INewsProcessorResult?> ProcessNewsAsync(string newsUrl)
 		{
 			var promptWithUrl = _prompt.Replace("{{URL}}", newsUrl);
 			var requestBody = new
@@ -42,7 +42,7 @@ namespace Model.Gpt
 				.GetString();
 
 			if (string.IsNullOrWhiteSpace(content))
-				return new NewsProcessingResult(null, new ErrorResult("Empty response from model"));
+				return new ErrorResult("Empty response from model");
 			try
 			{
 				var options = new JsonSerializerOptions
@@ -52,14 +52,13 @@ namespace Model.Gpt
 				};
 				var success = JsonSerializer.Deserialize<SuccessResult>(content, options);
 				if (success != null)
-					return new NewsProcessingResult(success, null);
+					return success;
 				else
-					return new NewsProcessingResult(null, new ErrorResult(content));
+					return new ErrorResult(content);
 			}
-			catch (JsonException ex)
+			catch (Exception)
 			{
-				return new NewsProcessingResult(null,
-					new ErrorResult(content));
+				return new ErrorResult(content);
 			}
 		}
 	}
