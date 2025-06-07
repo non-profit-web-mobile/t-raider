@@ -7,6 +7,12 @@ public static class GptServiceCollectionExtensions
 {
 	public static void AddGpt(this IServiceCollection services, IConfiguration configuration)
 	{
-		services.AddSingleton<IGptClient, OpenAIClient>();
+		services
+			.AddOptions<GptOptions>()
+			.Bind(configuration.GetSection(GptOptions.SectionKey))
+			.ValidateDataAnnotations()
+			.ValidateOnStart();
+
+		services.AddSingleton<IGptClient, OpenAiClient>();
 	}
 }
