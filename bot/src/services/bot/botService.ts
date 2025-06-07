@@ -1,4 +1,4 @@
-import { Context } from 'telegraf';
+import { Context, Telegraf } from 'telegraf';
 import { UserService } from '../data/userService';
 import { KeyboardBuilder } from './ui/keyboardBuilder';
 import { BotMessages } from './ui/botMessages';
@@ -6,11 +6,20 @@ import { SetupHandler } from './handlers/setupHandler';
 import { TickerHandler } from './handlers/tickerHandler';
 import { SessionData } from '../../database/schemas/userProfile';
 import { logger } from '../../utils/logger';
+import { BroadcastService } from './broadcastService';
+import { NewsHandler } from './handlers/newsHandler';
 
 export class BotService {
   private userService = new UserService();
   private setupHandler = new SetupHandler();
   private tickerHandler = new TickerHandler();
+  private broadcastService: BroadcastService;
+  private newsHandler: NewsHandler;
+
+  constructor(botInstance: Telegraf) {
+    this.broadcastService = new BroadcastService(botInstance);
+    this.newsHandler = new NewsHandler(this.broadcastService);
+  }
 
   async handleStart(ctx: Context): Promise<void> {
     const userId = ctx.from?.id;
@@ -29,12 +38,6 @@ export class BotService {
       logger.error('Error in handleStart:', error);
       await ctx.reply(BotMessages.ERROR_GENERIC);
     }
-  }
-
-  async handleCallbackQuery(ctx: Context): Promise<void> {
-    // Этот метод больше не используется, так как мы переходим на обычную клавиатуру
-    // Оставляем для совместимости, но логика перенесена в handleMessage
-    return;
   }
 
   async handleMessage(ctx: Context): Promise<void> {
@@ -123,5 +126,14 @@ export class BotService {
     } else {
       await ctx.reply(BotMessages.USE_START_COMMAND);
     }
+  }
+
+  async handleCallbackQuery(ctx: Context): Promise<void> {
+    // Обработчик callback запросов (пока заглушка)
+    await ctx.answerCbQuery();
+  }
+
+  getNewsHandler(): NewsHandler {
+    return this.newsHandler;
   }
 }

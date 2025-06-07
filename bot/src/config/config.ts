@@ -19,6 +19,7 @@ export const config = {
   // Kafka
   KAFKA_BROKERS: process.env.KAFKA_BROKERS?.split(',') || ['localhost:9092'],
   KAFKA_CLIENT_ID: process.env.KAFKA_CLIENT_ID || 'telegram-bot',
+  KAFKA_TOPIC: process.env.KAFKA_TOPIC || 'HypothesesForUsers',
   
   // Logging
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',

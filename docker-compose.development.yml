@@ -39,19 +39,19 @@ services:
       ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=password;Host=postgres;Port=5432;Database=t-raider-database;"
     restart: on-failure
 
-  # worker:
-  #   build: 
-  #     context: .
-  #     dockerfile: Dockerfile
-  #     target: worker
-  #   container_name: worker
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   environment:
-  #     Kafka__BootstrapServers: "kafka:9092"
-  #     ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=password;Host=postgres;Port=5432;Database=t-raider-database;"
-  #   restart: on-failure
+  worker:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: worker
+    container_name: worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      Kafka__BootstrapServers: "kafka:9092"
+      ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=password;Host=postgres;Port=5432;Database=t-raider-database;"
+    restart: on-failure
 
   kafka:
     image: bitnami/kafka:latest
