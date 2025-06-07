@@ -16,9 +16,9 @@ public class ItemsController(
 		[FromBody] CreateItemRequest request,
 		CancellationToken cancellationToken)
 	{
-		var topicInfo = topicInfoProvider.GetItemsTopicInfo();
+		var topicInfo = topicInfoProvider.GetRawNewsTopicInfo();
 		var key = Guid.NewGuid().ToString();
-		var message = new ItemMessage(request.Value);
+		var message = new RawNewsMessage(request.Value);
 		var serializedMessage = kafkaMessageSerializer.Serialize(message);
 		await kafkaProducer.ProduceAsync(topicInfo, key, serializedMessage, cancellationToken);
 
