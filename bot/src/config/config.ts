@@ -14,6 +14,7 @@ export const config = {
   DB_NAME: process.env.DB_NAME || 'telegram_bot',
   DB_USER: process.env.DB_USER || 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD || '',
+  DB_SCHEMA: process.env.DB_SCHEMA || 't-raider',
   
   // Kafka
   KAFKA_BROKERS: process.env.KAFKA_BROKERS?.split(',') || ['localhost:9092'],
