@@ -76,5 +76,41 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  telegram-bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    container_name: telegram-bot
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      BOT_TOKEN: your_bot_token_here
+      WEBHOOK_URL: https://your-domain.com
+      
+      PORT: 3000
+      NODE_ENV: development
+      
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: t-raider-database
+      DB_USER: admin
+      DB_PASSWORD: password
+      
+      KAFKA_BROKERS: kafka:9092
+      KAFKA_CLIENT_ID: telegram-bot
+      
+      LOG_LEVEL: info
+    volumes:
+      - ./bot/logs:/app/logs
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
 volumes:
   postgres_data:
