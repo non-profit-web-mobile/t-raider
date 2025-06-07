@@ -1,3 +1,5 @@
+using Model.Domain;
+
 namespace Worker.NewsProcessing.Results;
 
-public record SuccessNewsProcessorResult : INewsProcessorResult;
+public record SuccessNewsProcessorResult(IEnumerable<Hypothesis> Hypotheses) : INewsProcessorResult;

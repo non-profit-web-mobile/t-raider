@@ -1,3 +1,3 @@
 namespace Worker.NewsProcessing.Results;
 
-public record FailedNewsProcessorResult() : INewsProcessorResult;
+public record FailedNewsProcessorResult(IEnumerable<string> Fails) : INewsProcessorResult;

@@ -6,7 +6,7 @@ public record NewsProcessingResult(
 	double Newsworthiness,
 	string Explanation,
 	IReadOnlyList<string> Tickers,
-	IReadOnlyList<Hypothesis> Hypothesis
+	IReadOnlyList<Hypothesis> Hypotheses
 );
 
 public record Hypothesis(
