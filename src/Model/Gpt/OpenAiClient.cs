@@ -1,17 +1,18 @@
 using System.ClientModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Options;
 using Model.Domain;
 using OpenAI;
 using OpenAI.Responses;
 
 namespace Model.Gpt
 {
-    public class OpenAIClient(string apiKey) : IGptClient
+    public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
     {
         private readonly OpenAIResponseClient _openAiResponseClient = new(
             "gpt-4.1",
-            new ApiKeyCredential(apiKey),
+            new ApiKeyCredential(gptOptions.Value.ApiKey),
             new OpenAIClientOptions
             {
                 Endpoint = new Uri("https://api.openai.com/v1")
