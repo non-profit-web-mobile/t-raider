@@ -2,6 +2,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { config } from '../config/config';
 import { logger } from '../utils/logger';
+import * as schema from './schemas';
 
 let db: ReturnType<typeof drizzle>;
 let pool: Pool;
@@ -19,7 +20,7 @@ export async function connectDB() {
     // Тестируем подключение
     await pool.query('SELECT 1');
     
-    db = drizzle(pool);
+    db = drizzle(pool, { schema });
     logger.info('Database connection established');
     
     return db;

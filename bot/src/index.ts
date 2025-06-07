@@ -1,10 +1,10 @@
 import express from 'express';
 import { Telegraf } from 'telegraf';
-import { logger } from './utils/logger';
-import { connectDB } from './database/connection';
-import { connectKafka } from './kafka/connection';
-import { config } from './config/config';
 import { ExtraSetWebhook } from 'telegraf/typings/telegram-types';
+import { config } from './config/config';
+import { connectDB } from './database/connection';
+import { BotService } from './services/bot/botService';
+import { logger } from './utils/logger';
 
 const app = express();
 const bot = new Telegraf(config.BOT_TOKEN);
@@ -32,15 +32,7 @@ const validateWebhookSecret = (req: express.Request, res: express.Response, next
   next();
 };
 
-// Обработчик всех сообщений - отвечает "hello"
-bot.on('message', async (ctx) => {
-  try {
-    logger.info(`Received message from user ${ctx.from?.id}: ${'text' in ctx.message ? ctx.message.text : 'non-text message'}`);
-    await ctx.reply('hello');
-  } catch (error) {
-    logger.error('Error handling message:', error);
-  }
-});
+// Bot handlers will be set up after database connection
 
 // Webhook endpoint
 app.use('/webhook', validateWebhookSecret, bot.webhookCallback());
@@ -50,11 +42,34 @@ app.get('/health', (_, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+
+
 async function startServer() {
   try {
     // Подключение к базе данных
     await connectDB();
     logger.info('Database connected successfully');
+
+    // Создаем BotService после подключения к БД
+    const botService = new BotService();
+
+    // Настраиваем обработчики бота
+    bot.start(async (ctx) => {
+      await botService.handleStart(ctx);
+    });
+
+    bot.on('callback_query', async (ctx) => {
+      await botService.handleCallbackQuery(ctx);
+    });
+
+    bot.on('message', async (ctx) => {
+      try {
+        logger.info(`Received message from user ${ctx.from?.id}: ${'text' in ctx.message ? ctx.message.text : 'non-text message'}`);
+        await botService.handleMessage(ctx);
+      } catch (error) {
+        logger.error('Error handling message:', error);
+      }
+    });
 
     // // Подключение к Kafka
     // await connectKafka();

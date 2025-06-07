@@ -1,2 +1,3 @@
-export { users } from './users';
-export { messages } from './messages'; 
+export { userProfiles } from './userProfile';
+export { tickers } from './ticker';
+export { userProfileTickers } from './userProfileTickers'; 
