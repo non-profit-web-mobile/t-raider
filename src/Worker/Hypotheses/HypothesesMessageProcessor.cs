@@ -48,7 +48,7 @@ public class HypothesesMessageProcessor(
 			.ToList();
 
 		var messages = hypothesesForUser
-			.GroupBy(x => x.Hypotheses)
+			.GroupBy(x => x.Hypotheses, new HypothesesHashSetEqualityComparer())
 			.Select(x => new HypothesesForUsersMessage(
 				x.Select(y => y.TelegramId).ToList(),
 				message.NewsAnalyze with { Hypotheses = x.Key.ToList() }))
@@ -69,4 +69,19 @@ public class HypothesesMessageProcessor(
 	private record HypothesisForUser(long TelegramId, Hypothesis Hypothesis);
 
 	private record HypothesesForUser(long TelegramId, HashSet<Hypothesis> Hypotheses);
+
+	private class HypothesesHashSetEqualityComparer : IEqualityComparer<HashSet<Hypothesis>>
+	{
+		public bool Equals(HashSet<Hypothesis>? x, HashSet<Hypothesis>? y)
+		{
+			if (x == null && y == null) return true;
+			if (x == null || y == null) return false;
+			return x.SetEquals(y);
+		}
+
+		public int GetHashCode(HashSet<Hypothesis> obj)
+		{
+			return obj.Aggregate(0, (current, hypothesis) => current ^ hypothesis.GetHashCode());
+		}
+	}
 }
