@@ -1,16 +1,22 @@
+using Model.Gpt;
 using Model.NewsProcessing.Results;
 
 namespace Model.NewsProcessing;
 
 public class NewsProcessor
 {
+    private GPTClient _gptClient = new("", "");
+        
     public async Task<INewsProcessorResult> ProcessAsync(NewsProcessorRequest request)
     {
-        throw new NotImplementedException();
+        var analyzeNewsResult = await _gptClient.AnalyzeNewsAsync(request.newsUrl);
+
+        if (analyzeNewsResult is null)
+            return new FailedNewsProcessorResult(["Sheet happens"]);
+
+        return new SuccessNewsProcessorResult(analyzeNewsResult);
     }
 }
-
-public record NewsProcessorRequest(string Link);
 
 public record RawNewsMessage
 {

@@ -2,4 +2,4 @@ using Model.Domain;
 
 namespace Model.NewsProcessing.Results;
 
-public record SuccessNewsProcessorResult(IEnumerable<Hypothesis> Hypotheses) : INewsProcessorResult;
+public record SuccessNewsProcessorResult(NewsProcessingResult Result) : INewsProcessorResult;
