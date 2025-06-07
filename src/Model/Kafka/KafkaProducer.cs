@@ -72,7 +72,7 @@ public class KafkaProducer(ILogger<KafkaProducer> logger) : IKafkaProducer
 				MaxInFlight = 5,
 				LingerMs = 5,
 				BatchSize = 16384,
-				CompressionType = CompressionType.Snappy,
+				CompressionType = CompressionType.Gzip,
 				MessageTimeoutMs = 30000,
 				RequestTimeoutMs = 30000,
 				MessageSendMaxRetries = 3,
