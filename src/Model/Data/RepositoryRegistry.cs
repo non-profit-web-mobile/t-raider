@@ -4,5 +4,5 @@ namespace Model.Data;
 
 public class RepositoryRegistry(DataContext dataContext) : IRepositoryRegistry
 {
-	public IItemsRepository Items { get; } = new ItemsRepository(dataContext);
+	public IUserProfileRepository UserProfileRepository { get; } = new UserProfileRepository(dataContext);
 }

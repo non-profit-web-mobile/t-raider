@@ -26,10 +26,28 @@ public class ItemsController(
 		var serializedMessage = kafkaMessageSerializer.Serialize(message);
 		await kafkaProducer.ProduceAsync(topicInfo, key, serializedMessage);
 
-		var item = new Item { Value = request.Value };
+		var userProfile = new UserProfile
+		{
+			TelegramId = 1,
+			StreamEnabled = true,
+			SummaryEnabled = true,
+			Confidence = 1,
+			Tickers = new List<Ticker>
+			{
+				new()
+				{
+					Symbol = "AAPL"
+				}
+			}
+		};
+
 		await dataExecutionContext.ExecuteWithTransactionAsync(
-			async repositories => await repositories.Items.CreateAsync(item, cancellationToken), 
+			async repositories => await repositories.UserProfileRepository.CreateAsync(userProfile, cancellationToken), 
 			IsolationLevel.Snapshot,
+			cancellationToken);
+
+		var existingUserProfile = await dataExecutionContext.ExecuteAsync(
+			async repositories => await repositories.UserProfileRepository.GetByIdAsync(userProfile.Id, cancellationToken),
 			cancellationToken);
 
 		return new CreateItemResponse(true);

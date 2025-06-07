@@ -7,6 +7,6 @@ public class CreateSchema : MigrationBase
 {
 	public override void Up()
 	{
-		Create.Schema("t-raider");
+		Create.Schema(Constants.Schema);
 	}
 }
