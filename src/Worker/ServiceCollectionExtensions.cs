@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Model.Data;
 using Model.Gpt;
 using Model.HypothesesProcessing;
@@ -7,6 +8,7 @@ using Model.MessageClicks;
 using Worker.Hypotheses;
 using Worker.NewsSummarySender;
 using Worker.RawNews;
+using Worker.Tasks;
 
 namespace Worker;
 
@@ -23,5 +25,6 @@ public static class ServiceCollectionExtensions
 		services.AddSingleton<IHypothesesProcessor, HypothesesProcessor>();
 		services.AddHypothesesProcessing();
 		services.AddMessageClicks();
+		services.AddHostedService<DemoNewsTask>();
 	}
 }
