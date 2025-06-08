@@ -35,4 +35,11 @@ public class AdminSignalMessageFactory : IAdminSignalMessageFactory
             $"{trimmedErrorMessage}" +
             $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss (UTC)}");
     }
+
+    public AdminSignalMessage Create(MessageClick messageClick)
+    {
+        return new AdminSignalMessage(
+            $"👀 Получили клик \"{messageClick.ClickType}\" от пользователя для идеи \"{messageClick.Tactics}\" по ссылке {messageClick.Link}\r\n" +
+            $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss (UTC)}");
+    }
 }

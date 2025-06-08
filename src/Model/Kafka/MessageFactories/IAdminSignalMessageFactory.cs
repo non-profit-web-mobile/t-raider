@@ -7,4 +7,5 @@ public interface IAdminSignalMessageFactory
 {
     AdminSignalMessage Create(NewsProcessorSuccessResult newsProcessorSuccessResult);
     AdminSignalMessage Create(NewsProcessorErrorResult newsProcessorErrorResult);
+    AdminSignalMessage Create(MessageClick messageClick);
 }
