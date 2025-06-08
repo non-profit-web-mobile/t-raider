@@ -84,7 +84,7 @@ public class MessageToSendFactory(IMessageClickEncoder messageClickEncoder) : IM
 
     private static string DecorateForTrackingLink(string messageKey, string antiForgeryHash, string link)
     {
-        return $"https://t-raider-vnedreid.com/" +
+        return $"https://d5dr810i1jcpfspl7aun.pdkwbi1w.apigw.yandexcloud.net/services/" +
                $"c?" +
                $"m={HttpUtility.UrlEncode(messageKey)}&" +
                $"h={HttpUtility.UrlEncode(antiForgeryHash)}&" +
