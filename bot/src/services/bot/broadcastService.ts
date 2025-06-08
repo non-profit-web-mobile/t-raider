@@ -32,7 +32,7 @@ export class BroadcastService {
     for (const telegramId of telegramIds) {
       try {
         const sendOptions: ExtraReplyMessage = { 
-          parse_mode: 'HTML',
+          parse_mode: 'Markdown',
         };
 
         if (keyboard) {

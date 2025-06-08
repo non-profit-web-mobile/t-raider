@@ -84,7 +84,6 @@ async function startServer() {
 
     // Установка вебхука
     const webhookUrl = `${config.WEBHOOK_URL}/webhook`;
-
     const webhookOptions: ExtraSetWebhook = {};
 
     if (config.WEBHOOK_SECRET !== '') {
