@@ -30,8 +30,8 @@ jobs:
           docker build . --rm --tag ${{ env.registry }}/${{ env.services_image }}:latest --target services
           docker build . --rm --tag ${{ env.registry }}/${{ env.worker_image }}:latest --target worker
           docker build . --rm --tag ${{ env.registry }}/${{ env.migrator_image }}:latest --target migrator
-          docker build -f /bot/Dockerfile . --rm --tag ${{ env.registry }}/${{ env.bot_image }}:latest
-          docker build -f /admin-bot/Dockerfile . --rm --tag ${{ env.registry }}/${{ env.admin_bot_image }}:latest
+          docker build -f ./bot/Dockerfile . --rm --tag ${{ env.registry }}/${{ env.bot_image }}:latest
+          docker build -f ./admin-bot/Dockerfile . --rm --tag ${{ env.registry }}/${{ env.admin_bot_image }}:latest
 
       - name: Login in docker registry
         run: echo '${{ secrets.YANDEX_AUTHORIZED_KEY }}' | docker login --username json_key --password-stdin cr.yandex
