@@ -28,27 +28,27 @@ public class MessageToSendFactory(IMessageClickEncoder messageClickEncoder) : IM
         var hypothesisTicker = hypothesis.Ticker;
 
         var toTickerUrl = $"https://www.tbank.ru/invest/stocks/{hypothesisTicker}/";
-        var toTickerMessageKey = messageClickEncoder.Encode(
-            clickType: "OnTicker", 
-            tactics: hypothesisTactics);
-        var toTickerDecoratedUrl = DecorateForTrackingLink(
-            messageKey: toTickerMessageKey, 
-            antiForgeryHash: Guid.NewGuid().ToString("N"), 
-            link: toTickerUrl);
+        // var toTickerMessageKey = messageClickEncoder.Encode(
+        //     clickType: "OnTicker", 
+        //     tactics: hypothesisTactics);
+        // var toTickerDecoratedUrl = DecorateForTrackingLink(
+        //     messageKey: toTickerMessageKey, 
+        //     antiForgeryHash: Guid.NewGuid().ToString("N"), 
+        //     link: toTickerUrl);
 
         var toNewsUrl = newsAnalyze.SourceUrl.ToString();
-        var toNewsUrlKey = messageClickEncoder.Encode(
-            clickType: "OnNews", 
-            tactics: hypothesisTactics);
-        var toNewsDecoratedUrl = DecorateForTrackingLink(
-            messageKey: toNewsUrlKey, 
-            antiForgeryHash: Guid.NewGuid().ToString("N"), 
-            link: toNewsUrl);
+        // var toNewsUrlKey = messageClickEncoder.Encode(
+        //     clickType: "OnNews", 
+        //     tactics: hypothesisTactics);
+        // var toNewsDecoratedUrl = DecorateForTrackingLink(
+        //     messageKey: toNewsUrlKey, 
+        //     antiForgeryHash: Guid.NewGuid().ToString("N"), 
+        //     link: toNewsUrl);
 
         var buttons = new List<Button>
         {
-            new("Открыть новость", toTickerDecoratedUrl),
-            new($"{hypothesisTicker} в T-Инвестициях", toNewsDecoratedUrl)
+            new("Открыть новость", toNewsUrl),
+            new($"{hypothesisTicker} в T-Инвестициях", toTickerUrl)
         };
 
 		return new MessageToSend(
