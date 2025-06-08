@@ -1,0 +1,39 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  push-docker:
+    name: Push docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      registry: cr.yandex/crpms6iaa8rs3mvdhl1a
+      services_image: t_raider_services
+      worker_image: t_raider_worker
+      migrator_image: t_raider_migrator
+
+      DOCKER_BUILDKIT: 1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build docker images
+        run: |
+          docker build . --rm --tag ${{ env.registry }}/${{ env.services_image }}:latest --target services
+          docker build . --rm --tag ${{ env.registry }}/${{ env.worker_image }}:latest --target worker
+          docker build . --rm --tag ${{ env.registry }}/${{ env.migrator_image }}:latest --target migrator
+
+      - name: Login in docker registry
+        run: echo '${{ secrets.YANDEX_AUTHORIZED_KEY }}' | docker login --username json_key --password-stdin cr.yandex
+
+      - name: Push docker images
+        run: |
+          docker push ${{ env.registry }}/${{ env.services_image }}:latest
+          docker push ${{ env.registry }}/${{ env.worker_image }}:latest
+          docker push ${{ env.registry }}/${{ env.migrator_image }}:latest
