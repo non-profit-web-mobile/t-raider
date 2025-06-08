@@ -16,7 +16,6 @@ async function listAllTickers() {
     logger.info(`Found ${allTickers.length} tickers in database:`);
     
     if (allTickers.length > 0) {
-      console.table(allTickers);
       logger.info(`Ticker symbols: ${allTickers.map(t => t.symbol).join(', ')}`);
     } else {
       logger.info('No tickers found in database');
