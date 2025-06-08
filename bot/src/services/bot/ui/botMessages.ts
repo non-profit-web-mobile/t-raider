@@ -15,10 +15,10 @@ export const BotMessages = {
   
   // Тикеры
   TICKER_SELECTION: '🎯 Хотите добавить конкретные тикеры для отслеживания?\n\n' +
-    'Например: TATN, VTBR, OZON',
+    'Например: GAZP, LKOH, ROSN, SBER',
   TICKER_INPUT_PROMPT: '📝 Введите тикеры через запятую или пробел:\n\n' +
-    'Например: TATN, VTBR, OZON\n' +
-    'или: RUAL ALRS CHMF',
+    'Например: GAZP, LKOH, ROSN, SBER\n' +
+    'или: TATN, VTBR, OZON',
   
   // Завершение настройки
   SETUP_COMPLETE: '🎉 Поздравляем! Настройка завершена!\n\n' +
@@ -100,7 +100,7 @@ export const SourceTypes = {
 } as const;
 
 export const ConfidenceValues = {
-  conservative: 0.8,
+  conservative: 0.75,
   mixed: 0.5,
   maximum: 0.3
 } as const; 
