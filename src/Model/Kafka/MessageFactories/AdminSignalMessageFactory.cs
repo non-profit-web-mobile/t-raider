@@ -1,5 +1,6 @@
 using Model.Domain;
 using Model.Kafka.Messages;
+using Newtonsoft.Json;
 
 namespace Model.Kafka.MessageFactories;
 
@@ -14,11 +15,15 @@ public class AdminSignalMessageFactory : IAdminSignalMessageFactory
             $"{processingDurationTime.Seconds:D2}." +
             $"{processingDurationTime.Milliseconds / 10:D2}";
 
+        var json = JsonConvert.SerializeObject(newsProcessorSuccessResult.NewsAnalyze, Formatting.Indented);
+        
         var message =
             $"🚀 Успешно обработана новость \"{newsProcessorSuccessResult.NewsAnalyze.Brief}\" из источника {newsProcessorSuccessResult.NewsUrl}\r\n" +
             $"По новости сформулировано {newsProcessorSuccessResult.NewsAnalyze.Hypotheses.Count} гипотез\r\n" +
             $"Потрачено токенов {newsProcessorSuccessResult.UsageTotalTokenCount}, время обработки {formattedProcessingDurationTime}\r\n" +
-            $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss (UTC)}";
+            $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss (UTC)}\r\n" +
+            $"Ответ openai:\r\n" +
+            $"```JSON{json}```";
 
         return new AdminSignalMessage(message);
     }
