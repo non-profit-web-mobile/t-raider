@@ -278,3 +278,8 @@ secrets.json
 
 # Environment variables
 .env
+
+.terraform
+.terraform.*
+terraform.tfvars
+authorized_key.json

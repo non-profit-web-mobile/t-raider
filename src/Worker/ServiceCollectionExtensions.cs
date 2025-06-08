@@ -3,6 +3,7 @@ using Model.Gpt;
 using Model.HypothesesProcessing;
 using Model.Kafka;
 using Model.Kafka.MessageFactories;
+using Model.MessageClicks;
 using Worker.Hypotheses;
 using Worker.NewsSummarySender;
 using Worker.RawNews;
@@ -21,5 +22,7 @@ public static class ServiceCollectionExtensions
 		services.AddHypotheses();
 		services.AddSingleton<IHypothesesProcessor, HypothesesProcessor>();
 		services.AddNewsSummarySender();
+		services.AddHypothesesProcessing();
+		services.AddMessageClicks();
 	}
 }

@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_DB: t-raider-database
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: "${postgres_password}"
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -26,50 +26,46 @@ services:
           cpus: '1'
           memory: 2G
 
-  migrator:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-      target: migrator
-    container_name: migrator
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=password;Host=postgres;Port=5432;Database=t-raider-database;"
-    restart: on-failure
+  # migrator:
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: migrator
+  #   container_name: migrator
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   environment:
+  #     ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=${postgres_password};Host=postgres;Port=5432;Database=t-raider-database;"
+  #   restart: on-failure
 
-  worker:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-      target: worker
-    container_name: worker
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      Kafka__BootstrapServers: "kafka:9092"
-      ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=password;Host=postgres;Port=5432;Database=t-raider-database;"
-      Gpt__Uri: "https://api.proxyapi.ru/openai/v1"
-    restart: on-failure
+  # worker:
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: worker
+  #   container_name: worker
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   environment:
+  #     Kafka__BootstrapServers: "kafka:9092"
+  #     ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=${postgres_password};Host=postgres;Port=5432;Database=t-raider-database;"
+  #   restart: on-failure
 
-  services:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-      target: services
-    ports:
-      - 5001:5001
-    container_name: services
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      Kafka__BootstrapServers: "kafka:9092"
-      ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=password;Host=postgres;Port=5432;Database=t-raider-database;"
-      Gpt__Uri: "https://api.proxyapi.ru/openai/v1"
-    restart: on-failure
+  # services:
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: services
+  #   container_name: services
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   environment:
+  #     Kafka__BootstrapServers: "kafka:9092"
+  #     ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=${postgres_password};Host=postgres;Port=5432;Database=t-raider-database;"
+  #   restart: on-failure
 
   kafka:
     image: bitnami/kafka:latest

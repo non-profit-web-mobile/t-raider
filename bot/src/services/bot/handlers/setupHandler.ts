@@ -93,12 +93,12 @@ export class SetupHandler {
   private buildSetupCompleteMessage(session: SessionData, userTickers: string[]): string {
     const sourcesText = session.selectedSources === 'basic' ? SourceTypes.basic : SourceTypes.premium;
     const riskText = this.getRiskProfileText(session.selectedRiskProfile!);
-    const tickersText = userTickers.length > 0 ? userTickers.join(', ') : 'не выбраны';
+    const tickersText = userTickers.length > 0 ? userTickers.sort().join(', ') : 'не выбраны';
 
     return BotMessages.SETUP_COMPLETE +
       `📊 Источники: ${sourcesText}\n` +
       `⚖️ Риск-профиль: ${riskText}\n` +
-      `📊 Тикеры: ${tickersText}\n\n` +
+      `📋 Тикеры: ${tickersText}\n\n` +
       'Теперь вы будете получать актуальные новости для трейдинга!';
   }
 

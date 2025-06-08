@@ -13,7 +13,7 @@ public static class ConfigurationBuilderExtensions
 		configurationBuilder.AddJsonFile(Path.Combine(baseDirectory, "appsettings.common.json"), optional: false);
 		configurationBuilder.AddJsonFile(Path.Combine(baseDirectory, $"appsettings.{contour}.json"), optional: true);
 
-		configurationBuilder.AddJsonFile(Path.Combine(baseDirectory, "secrets.json"), optional: false);
+		configurationBuilder.AddJsonFile(Path.Combine(baseDirectory, "secrets.json"), optional: true);
 
 		configurationBuilder.AddEnvironmentVariables();
 	}

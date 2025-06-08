@@ -68,12 +68,15 @@ export class TickerHandler {
 
       // Получаем случайные тикеры из доступных
       const portfolioTickers =
-        await this.tickerService.getRandomPortfolioTickers(10);
+        await this.tickerService.getRandomPortfolioTickers(5);
 
-      await this.addTickersToUser(user.id, portfolioTickers);
+      const tickers = [...portfolioTickers, 'SBER', 'GAZP', 'LKOH', 'YNDX', 'ROSN'];
+      const uniqueTickers = [...new Set(tickers)].sort();
+
+      await this.addTickersToUser(user.id, uniqueTickers);
 
       await ctx.reply(
-        BotMessages.FORMATTERS.tickersFromPortfolio(portfolioTickers),
+        BotMessages.FORMATTERS.tickersFromPortfolio(uniqueTickers),
         KeyboardBuilder.getMainMenuKeyboard()
       );
 
