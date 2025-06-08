@@ -51,6 +51,24 @@ services:
     environment:
       Kafka__BootstrapServers: "kafka:9092"
       ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=password;Host=postgres;Port=5432;Database=t-raider-database;"
+      Gpt__Uri: "https://api.proxyapi.ru/openai/v1"
+    restart: on-failure
+
+  services:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: services
+    ports:
+      - 5001:5001
+    container_name: services
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      Kafka__BootstrapServers: "kafka:9092"
+      ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=password;Host=postgres;Port=5432;Database=t-raider-database;"
+      Gpt__Uri: "https://api.proxyapi.ru/openai/v1"
     restart: on-failure
 
   kafka:
