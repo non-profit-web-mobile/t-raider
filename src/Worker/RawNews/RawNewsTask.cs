@@ -5,7 +5,7 @@ namespace Worker.RawNews;
 
 public class RawNewsTask(
 	IServiceProvider serviceProvider,
-	ILogger<BackgroundTask> logger)
+	ILogger<RawNewsTask> logger)
 	: ScopedBackgroundTask(serviceProvider, TaskSchedule.Periodical(TimeSpan.FromMinutes(1)), logger)
 {
 	protected override async Task ExecuteIterationAsync(IServiceScope serviceScope, CancellationToken cancellationToken)

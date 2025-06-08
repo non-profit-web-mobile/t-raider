@@ -104,22 +104,22 @@ services:
       Gpt__ApiKey: "${gpt_api_key}"
     restart: on-failure
 
-  admin-bot:
-    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_admin_bot:latest
-    container_name: admin-bot
-    depends_on:
-      kafka:
-        condition: service_healthy
-    environment:
-      BOT_TOKEN: ${admin_bot_token}
+  # admin-bot:
+  #   image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_admin_bot:latest
+  #   container_name: admin-bot
+  #   depends_on:
+  #     kafka:
+  #       condition: service_healthy
+  #   environment:
+  #     BOT_TOKEN: ${admin_bot_token}
       
-      KAFKA_BROKERS: kafka:9092
-      KAFKA_CLIENT_ID: telegram-admin-bot
+  #     KAFKA_BROKERS: kafka:9092
+  #     KAFKA_CLIENT_ID: telegram-admin-bot
 
-      ADMIN_IDS: 263000815,523595183,261582798,1081557346
+  #     ADMIN_IDS: 263000815,523595183,261582798,1081557346
       
-      LOG_LEVEL: info
-    restart: on-failure
+  #     LOG_LEVEL: info
+  #   restart: on-failure
 
   bot:
     image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_bot:latest

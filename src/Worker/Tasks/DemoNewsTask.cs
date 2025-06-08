@@ -6,7 +6,7 @@ namespace Worker.Tasks;
 
 public class DemoNewsTask(
 	IServiceProvider serviceProvider,
-	ILogger<BackgroundTask> logger)
+	ILogger<DemoNewsTask> logger)
 	: ScopedBackgroundTask(serviceProvider, TaskSchedule.Periodical(TimeSpan.FromSeconds(30)), logger)
 {
 	private static readonly string[] NewsLinks =
