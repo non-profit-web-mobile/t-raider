@@ -73,7 +73,7 @@ services:
     restart: on-failure
 
   worker:
-    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_worker:latest
+    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_worker:94dac65
     container_name: worker
     depends_on:
       postgres:
