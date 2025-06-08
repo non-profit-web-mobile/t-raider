@@ -10,7 +10,9 @@ public static class Program
 		=> Host
 			.CreateDefaultBuilder(args)
 			.ConfigureAppConfiguration((_, configurationBuilder) => configurationBuilder.AddAppSettings())
-			.ConfigureWebHostDefaults(webHostBuilder => webHostBuilder.UseStartup<Startup>())
+			.ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
+				.UseStartup<Startup>()
+				.UseUrls("http://+:5001"))
 			.UseDefaultServiceProvider((_, options) =>
 			{
 				options.ValidateScopes = true;

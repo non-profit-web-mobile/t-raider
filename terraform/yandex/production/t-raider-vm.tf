@@ -39,7 +39,11 @@ resource "yandex_compute_instance" "t_raider_vm" {
 
   metadata = {
     docker-compose = templatefile("t-raider-vm.docker-compose.yml", {
-      postgres_password       = var.postgres_password
+      postgres_password = var.postgres_password,
+      gpt_api_key       = var.gpt_api_key,
+      seq_password      = var.seq_password
+      seq_password_hash = var.seq_password_hash
+      seq_apikey        = var.seq_apikey
     })
     user-data = templatefile("t-raider-vm.user-data.yml", {
       ssh_authorized_key = var.ssh_authorized_key

@@ -22,6 +22,22 @@ variable "postgres_password" {
   type = string
 }
 
+variable "gpt_api_key" {
+  type = string
+}
+
+variable "seq_password" {
+  type = string
+}
+
+variable "seq_password_hash" {
+  type = string
+}
+
+variable "seq_apikey" {
+  type = string
+}
+
 variable "ssh_authorized_key" {
   type = string
 }
