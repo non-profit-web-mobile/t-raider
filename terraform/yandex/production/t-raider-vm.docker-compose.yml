@@ -1,29 +1,6 @@
 version: '3.8'
 
 services:
-  seq:
-    image: datalust/seq:latest
-    container_name: seq
-    ports:
-      - 5341:80
-    environment:
-      ACCEPT_EULA: "Y"
-      SEQ_FIRSTRUN_ADMINUSERNAME: "t-raider-user"
-      SEQ_FIRSTRUN_ADMINPASSWORDHASH: "${seq_password_hash}"
-      SEQ_FIRSTRUN_REQUIREAUTHENTICATIONFORHTTPINGESTION: "True"
-    volumes:
-      - seq-data:/data
-    restart: unless-stopped
-
-  seq-cli:
-    image: datalust/seqcli:latest
-    container_name: seq-cli
-    command: apikey create -t t-raider-apikey --token ${seq_api_key} -s http://seq --connect-username t-raider-user --connect-password ${seq_password}
-    depends_on:
-      seq:
-        condition: service_started
-    restart: on-failure:10
-
   postgres:
     image: postgres:15-alpine
     container_name: postgres
@@ -131,21 +108,20 @@ services:
       Seq__ApiKey: "${seq_api_key}"
     restart: on-failure
 
-  admin-bot:
-    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_admin_bot:latest
-    container_name: admin-bot
-    depends_on:
-      kafka:
-        condition: service_healthy
-    environment:
-      BOT_TOKEN: ${admin_bot_token}
+  # admin-bot:
+  #   image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_admin_bot:latest
+  #   container_name: admin-bot
+  #   depends_on:
+  #     kafka:
+  #       condition: service_healthy
+  #   environment:
+  #     BOT_TOKEN: ${admin_bot_token}
       
-      KAFKA_BROKERS: kafka:9092
-      KAFKA_CLIENT_ID: telegram-admin-bot
+  #     KAFKA_BROKERS: kafka:9092
+  #     KAFKA_CLIENT_ID: telegram-admin-bot
       
-      LOG_LEVEL: info
-    restart: unless-stopped
+  #     LOG_LEVEL: info
+  #   restart: on-failure
 
 volumes:
-  seq-data:
   postgres_data:
