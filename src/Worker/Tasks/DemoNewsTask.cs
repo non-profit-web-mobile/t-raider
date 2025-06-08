@@ -7,7 +7,7 @@ namespace Worker.Tasks;
 public class DemoNewsTask(
 	IServiceProvider serviceProvider,
 	ILogger<DemoNewsTask> logger)
-	: BackgroundTask(TaskSchedule.Periodical(TimeSpan.FromMinutes(1)), logger)
+	: BackgroundTask(TaskSchedule.Periodical(TimeSpan.FromMinutes(10)), logger)
 {
 	private static readonly RawNewsMessage[] NewsLinks =
 	[
