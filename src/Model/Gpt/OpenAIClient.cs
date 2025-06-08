@@ -16,7 +16,7 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
         new ApiKeyCredential(gptOptions.Value.ApiKey),
         new OpenAIClientOptions
         {
-            Endpoint = new Uri("https://api.openai.com/v1")
+            Endpoint = new Uri(gptOptions.Value.Uri)
         });
 
     public async Task<INewsProcessorResult> ProcessNewsAsync(string newsUrl, int sourceReliability)

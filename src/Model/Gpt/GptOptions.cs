@@ -8,4 +8,7 @@ public class GptOptions
 
 	[Required]
 	public required string ApiKey { get; set; }
+
+	[Required]
+	public required string Uri { get; set; }
 }
