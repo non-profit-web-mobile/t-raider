@@ -65,14 +65,18 @@ public class NewsSummarySenderService(
 			var userProfiles = await repositories.UserProfileRepository.GetManyAsync(cancellationToken);
 			var summaryUsers = userProfiles.Where(u => u.SummaryEnabled).ToList();
 
+			var qualifedNews = allNews.OrderByDescending(x => x.Newsworthiness).Take(5);
+			
 			foreach (var user in summaryUsers)
 			{
 				var relevantNews = new List<NewsAnalyze>();
-				foreach (var news in allNews)
+				foreach (var news in qualifedNews)
 				{
 					var relevantHypotheses = news.Hypotheses
 						.Where(h => user.Tickers.Any(t => t.Symbol == h.Ticker)
 						            && user.Confidence < h.Probability && h.Probability >= 0.8)
+						.OrderByDescending(x => x.Probability)
+						.Take(1)
 						.ToList();
 					if (relevantHypotheses.Any())
 					{

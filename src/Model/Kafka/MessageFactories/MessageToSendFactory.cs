@@ -5,14 +5,7 @@ using Model.MessageClicks;
 
 namespace Model.Kafka.MessageFactories;
 
-public interface IMessageToSendFactory
-{
-	public MessageToSend Create(IReadOnlyList<long> telegramIds, NewsAnalyze newsAnalyze);
-    
-    public MessageToSend Create(IReadOnlyList<long> telegramIds, IReadOnlyList<NewsAnalyze> news);
-}
-
-public class MessageToSendFactory : IMessageToSendFactory
+public class MessageToSendFactory(IMessageClickEncoder messageClickEncoder) : IMessageToSendFactory
 {
     public MessageToSend Create(IReadOnlyList<long> telegramIds, NewsAnalyze newsAnalyze)
     {
