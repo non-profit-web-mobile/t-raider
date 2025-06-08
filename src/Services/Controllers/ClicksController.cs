@@ -7,60 +7,67 @@ using Model.MessageClicks;
 namespace Services.Controllers;
 
 public class ClicksController(
-    ILogger<ClicksController> logger,
-    IMessageClickEncoder messageClickEncoder,
-    IAdminSignalMessageFactory adminSignalMessageFactory,
-    ITopicInfoProvider topicInfoProvider,
-    IKafkaProducer kafkaProducer,
-    IKafkaMessageSerializer kafkaMessageSerializer) : Controller
+	ILogger<ClicksController> logger,
+	IMessageClickEncoder messageClickEncoder,
+	IAdminSignalMessageFactory adminSignalMessageFactory,
+	ITopicInfoProvider topicInfoProvider,
+	IKafkaProducer kafkaProducer,
+	IKafkaMessageSerializer kafkaMessageSerializer) : Controller
 {
-    [HttpGet]
-    [Route("c")]
-    public async Task RedirectAsync(
-        [FromQuery(Name = "m")] string messageKey,
-        [FromQuery(Name = "h")] string antiForgeryHash, // this hash needs to be validated in future for anti-forgery
-        [FromQuery(Name = "u")] string redirectUri,
-        CancellationToken cancellationToken)
-    {
-        await RedirectAsyncInternal(HttpContext.Response, redirectUri);
+	[HttpGet]
+	[Route("test")]
+	public IActionResult Test()
+	{
+		return Ok();
+	}
 
-        await PublishUserClickSignalAsync(messageKey, redirectUri, cancellationToken);
-    }
+	[HttpGet]
+	[Route("c")]
+	public async Task RedirectAsync(
+		[FromQuery(Name = "m")] string messageKey,
+		[FromQuery(Name = "h")] string antiForgeryHash, // this hash needs to be validated in future for anti-forgery
+		[FromQuery(Name = "u")] string redirectUri,
+		CancellationToken cancellationToken)
+	{
+		await RedirectAsyncInternal(HttpContext.Response, redirectUri);
 
-    private static async Task RedirectAsyncInternal(HttpResponse httpContextResponse, string redirectUri)
-    {
-        httpContextResponse.Redirect(location: redirectUri, permanent: false);
-        await httpContextResponse.CompleteAsync();
-    }
+		await PublishUserClickSignalAsync(messageKey, redirectUri, cancellationToken);
+	}
 
-    private async Task PublishUserClickSignalAsync(
-        string messageKey,
-        string redirectUri,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            await PublishUserClickSignalSafeAsync(messageKey, redirectUri, cancellationToken);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Failed to publish user click signal");
-        }
-    }
+	private static async Task RedirectAsyncInternal(HttpResponse httpContextResponse, string redirectUri)
+	{
+		httpContextResponse.Redirect(location: redirectUri, permanent: false);
+		await httpContextResponse.CompleteAsync();
+	}
 
-    private async Task PublishUserClickSignalSafeAsync(
-        string messageKey,
-        string redirectUri,
-        CancellationToken cancellationToken)
-    {
-        var topicInfo = topicInfoProvider.GetAdminSignalsTopicInfo();
-        var key = Guid.NewGuid().ToString();
-        
-        var messageClick = messageClickEncoder.Decode(messageKey, redirectUri);
-        var message = adminSignalMessageFactory.Create(messageClick);
+	private async Task PublishUserClickSignalAsync(
+		string messageKey,
+		string redirectUri,
+		CancellationToken cancellationToken)
+	{
+		try
+		{
+			await PublishUserClickSignalSafeAsync(messageKey, redirectUri, cancellationToken);
+		}
+		catch (Exception exception)
+		{
+			logger.LogError(exception, "Failed to publish user click signal");
+		}
+	}
 
-        var serializedMessage = kafkaMessageSerializer.Serialize(message);
+	private async Task PublishUserClickSignalSafeAsync(
+		string messageKey,
+		string redirectUri,
+		CancellationToken cancellationToken)
+	{
+		var topicInfo = topicInfoProvider.GetAdminSignalsTopicInfo();
+		var key = Guid.NewGuid().ToString();
 
-        await kafkaProducer.ProduceAsync(topicInfo, key, serializedMessage, cancellationToken);
-    }
+		var messageClick = messageClickEncoder.Decode(messageKey, redirectUri);
+		var message = adminSignalMessageFactory.Create(messageClick);
+
+		var serializedMessage = kafkaMessageSerializer.Serialize(message);
+
+		await kafkaProducer.ProduceAsync(topicInfo, key, serializedMessage, cancellationToken);
+	}
 }
