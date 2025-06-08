@@ -278,6 +278,7 @@ secrets.json
 
 # Environment variables
 .env
+secrets.json
 
 .terraform
 .terraform.*
