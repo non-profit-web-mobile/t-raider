@@ -12,7 +12,7 @@ public static class Program
 			.ConfigureAppConfiguration((_, configurationBuilder) => configurationBuilder.AddAppSettings())
 			.ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
 				.UseStartup<Startup>()
-				.UseUrls("http://localhost:5001"))
+				.UseUrls("http://+:5001"))
 			.UseDefaultServiceProvider((_, options) =>
 			{
 				options.ValidateScopes = true;
