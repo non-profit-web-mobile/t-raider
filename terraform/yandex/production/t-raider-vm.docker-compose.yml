@@ -141,7 +141,7 @@ services:
       BOT_TOKEN: ${admin_bot_token}
       
       KAFKA_BROKERS: kafka:9092
-      KAFKA_CLIENT_ID: telegram-bot
+      KAFKA_CLIENT_ID: telegram-admin-bot
       
       LOG_LEVEL: info
     restart: unless-stopped
