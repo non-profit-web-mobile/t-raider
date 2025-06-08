@@ -85,8 +85,6 @@ services:
       ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=${postgres_password};Host=postgres;Port=5432;Database=t-raider-database;"
       Gpt__Uri: "https://api.proxyapi.ru/openai/v1"
       Gpt__ApiKey: "${gpt_api_key}"
-      Seq__ServerUrl: "http://seq:5341"
-      Seq__ApiKey: "${seq_api_key}"
     restart: on-failure
 
   services:
@@ -104,8 +102,6 @@ services:
       ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=${postgres_password};Host=postgres;Port=5432;Database=t-raider-database;"
       Gpt__Uri: "https://api.proxyapi.ru/openai/v1"
       Gpt__ApiKey: "${gpt_api_key}"
-      Seq__ServerUrl: "http://seq:5341"
-      Seq__ApiKey: "${seq_api_key}"
     restart: on-failure
 
   # admin-bot:
