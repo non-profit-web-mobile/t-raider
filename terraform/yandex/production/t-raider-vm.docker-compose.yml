@@ -115,6 +115,8 @@ services:
       
       KAFKA_BROKERS: kafka:9092
       KAFKA_CLIENT_ID: telegram-admin-bot
+
+      ADMIN_IDS: 263000815,523595183,261582798,1081557346
       
       LOG_LEVEL: info
     restart: on-failure
