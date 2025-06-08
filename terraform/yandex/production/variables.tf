@@ -38,6 +38,10 @@ variable "seq_api_key" {
   type = string
 }
 
+variable "admin_bot_token" {
+  type = string
+}
+
 variable "ssh_authorized_key" {
   type = string
 }
