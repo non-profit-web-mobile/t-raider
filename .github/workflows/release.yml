@@ -27,11 +27,11 @@ jobs:
 
       - name: Build docker images
         run: |
-          docker build . --rm --tag ${{ env.registry }}/${{ env.services_image }}:latest --target services
-          docker build . --rm --tag ${{ env.registry }}/${{ env.worker_image }}:latest --target worker
-          docker build . --rm --tag ${{ env.registry }}/${{ env.migrator_image }}:latest --target migrator
-          docker build -f ./bot/Dockerfile ./bot --rm --tag ${{ env.registry }}/${{ env.bot_image }}:latest
-          docker build -f ./admin-bot/Dockerfile ./admin-bot --rm --tag ${{ env.registry }}/${{ env.admin_bot_image }}:latest
+          docker build . --rm --tag ${{ env.registry }}/${{ env.services_image }}:latest --tag ${{ github.sha }} --target services
+          docker build . --rm --tag ${{ env.registry }}/${{ env.worker_image }}:latest --tag ${{ github.sha }} --target worker
+          docker build . --rm --tag ${{ env.registry }}/${{ env.migrator_image }}:latest --tag ${{ github.sha }} --target migrator
+          docker build -f ./bot/Dockerfile ./bot --rm --tag ${{ env.registry }}/${{ env.bot_image }}:latest --tag ${{ github.sha }}
+          docker build -f ./admin-bot/Dockerfile ./admin-bot --rm --tag ${{ env.registry }}/${{ env.admin_bot_image }}:latest --tag ${{ github.sha }}
 
       - name: Login in docker registry
         run: echo '${{ secrets.YANDEX_AUTHORIZED_KEY }}' | docker login --username json_key --password-stdin cr.yandex

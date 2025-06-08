@@ -44,6 +44,7 @@ resource "yandex_compute_instance" "t_raider_vm" {
       admin_bot_token   = var.admin_bot_token,
       bot_token         = var.bot_token
     })
+    docker-compose-hash = filesha256("t-raider-vm.docker-compose.yml")
     user-data = templatefile("t-raider-vm.user-data.yml", {
       ssh_authorized_key = var.ssh_authorized_key
     })
