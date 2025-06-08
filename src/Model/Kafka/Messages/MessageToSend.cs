@@ -1,6 +1,3 @@
-using System.Runtime.Serialization;
-using Model.Domain;
-
 namespace Model.Kafka.Messages;
 
 [DataContract]
