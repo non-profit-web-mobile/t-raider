@@ -49,5 +49,6 @@ resource "yandex_compute_instance" "t_raider_vm" {
     user-data = templatefile("t-raider-vm.user-data.yml", {
       ssh_authorized_key = var.ssh_authorized_key
     })
+    enable-oslogin = true
   }
 }
