@@ -16,7 +16,7 @@ public class MessageToSendFactory : IMessageToSendFactory
 		if (newsAnalyze.Hypotheses.Count == 0)
 		{
 			return new MessageToSend(
-				new List<long>(),
+				telegramIds,
 				"❗️ Нет торговых идей по данной новости.",
 				new List<Button> { new Button("Открыть новость", newsAnalyze.SourceUrl.ToString()) }
 			);
@@ -25,9 +25,12 @@ public class MessageToSendFactory : IMessageToSendFactory
 		var blocks = newsAnalyze.Hypotheses.Select(FormatHypothesisBlock).ToList();
 		var message = FormatFinalMessage(blocks, newsAnalyze);
 
+		var firstHypothesis = newsAnalyze.Hypotheses.First();
+		var tbankUrl = $"https://www.tbank.ru/invest/stocks/{firstHypothesis.Ticker}/";
 		var buttons = new List<Button>
 		{
-			new Button("Открыть новость", newsAnalyze.SourceUrl.ToString())
+			new Button("Открыть новость", newsAnalyze.SourceUrl.ToString()),
+			new Button($"T-Инвестиции: {firstHypothesis.Ticker}", tbankUrl)
 		};
 
 		return new MessageToSend(
@@ -39,23 +42,69 @@ public class MessageToSendFactory : IMessageToSendFactory
 
 	private static string FormatHypothesisBlock(Hypothesis hypothesis)
 	{
-		var actionText = MapActionToText(hypothesis.Action);
-		var stopLossTakeProfit = hypothesis.Action != "Hold"
-			? $"⛔️ Стоп-лосс: {hypothesis.StopLoss}\r\n" +
-			  $"🎯 Тейк-профит: {hypothesis.TakeProfit}\r\n"
+		return string.Join("\n", new[]
+		{
+			FormatActionLine(hypothesis),
+			FormatPriceLine(hypothesis),
+			FormatStopLossLine(hypothesis),
+			FormatTakeProfitLine(hypothesis),
+			FormatPeriodLine(hypothesis),
+			FormatTacticsLine(hypothesis),
+			FormatProbabilityLine(hypothesis)
+		});
+	}
+
+	private static string FormatActionLine(Hypothesis hypothesis)
+	{
+		return $"**{MapActionToText(hypothesis.Action)} {hypothesis.Ticker}**";
+	}
+
+	private static string FormatPriceLine(Hypothesis hypothesis)
+	{
+		return !string.IsNullOrWhiteSpace(hypothesis.Price.ToString("F0"))
+			? $"  💰 Текущая цена: {hypothesis.Price}₽"
 			: string.Empty;
-		
-		return $"{actionText} {hypothesis.Ticker}\r\n" +
-		       stopLossTakeProfit +
-		       $"⏳ Срок актуальности: {hypothesis.Period}\r\n\r\n" +
-		       $"💡 Идея: {hypothesis.Tactics}\r\n" +
-		       $"📈 Вероятность: 60%\r\n";
+	}
+
+	private static string FormatStopLossLine(Hypothesis hypothesis)
+	{
+		return !string.IsNullOrWhiteSpace(hypothesis.StopLoss.ToString("F0"))
+			? $"  ⛔️ Стоп-лосс: {hypothesis.StopLoss}₽"
+			: string.Empty;
+	}
+
+	private static string FormatTakeProfitLine(Hypothesis hypothesis)
+	{
+		return !string.IsNullOrWhiteSpace(hypothesis.TakeProfit.ToString("F0"))
+			? $"  🎯 Тейк-профит: {hypothesis.TakeProfit}₽"
+			: string.Empty;
+	}
+
+	private static string FormatPeriodLine(Hypothesis hypothesis)
+	{
+		return !string.IsNullOrWhiteSpace(hypothesis.Period.ToString("F0"))
+			? $"  ⏳ Срок актуальности: {hypothesis.Period} часов"
+			: string.Empty;
+	}
+
+	private static string FormatTacticsLine(Hypothesis hypothesis)
+	{
+		return $"💡 Идея: {hypothesis.Tactics}";
+	}
+
+	private static string FormatProbabilityLine(Hypothesis hypothesis)
+	{
+		return $"📈 Вероятность: {(hypothesis.Probability * 100):F0}%";
+	}
+
+	private static string FormatEventLine(NewsAnalyze newsAnalyze)
+	{
+		return $"Событие: {newsAnalyze.Brief}";
 	}
 
 	private static string FormatFinalMessage(List<string> blocks, NewsAnalyze newsAnalyze)
 	{
-		return string.Join("\n", blocks) +
-		       $"📰 Событие: [{newsAnalyze.Brief}]({newsAnalyze.SourceUrl})";
+		return string.Join("\n", blocks) + FormatEventLine(newsAnalyze);
 	}
 
 	private static string MapActionToText(string action)
