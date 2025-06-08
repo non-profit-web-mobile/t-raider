@@ -6,19 +6,6 @@ public class Startup(IConfiguration configuration)
 	{
 		services.AddControllers();
 
-		services.AddCors(options =>
-			options.AddDefaultPolicy(policy =>
-				policy
-					.SetIsOriginAllowed(_ => true)
-					.AllowCredentials()
-					.AllowAnyHeader()
-					.AllowAnyMethod()));
-
-		services.AddResponseCompression(options =>
-		{
-			options.EnableForHttps = true;
-		});
-
 		services.AddModel(configuration);
 
 		var seqSection = configuration.GetSection("Seq");
@@ -29,10 +16,6 @@ public class Startup(IConfiguration configuration)
 	public void Configure(IApplicationBuilder app, IWebHostEnvironment environment)
 	{
 		app.UseRouting();
-
-		app.UseCors();
-
-		app.UseResponseCompression();
 
 		app.UseEndpoints(builder =>
 		{
