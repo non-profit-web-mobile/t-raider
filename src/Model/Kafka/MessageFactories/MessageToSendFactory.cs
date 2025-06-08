@@ -107,65 +107,65 @@ public class MessageToSendFactory(IMessageClickEncoder messageClickEncoder) : IM
 
     private static string FormatActionLine(Hypothesis hypothesis)
     {
-        return $"**{MapActionToText(hypothesis.Action)} {hypothesis.Ticker}**";
+        return $"{MapActionToText(hypothesis.Action)} {hypothesis.Ticker}**";
     }
 
     private static string FormatPriceLine(Hypothesis hypothesis)
     {
         return !string.IsNullOrWhiteSpace(hypothesis.Price.ToString("F0"))
-            ? $"  💰 Текущая цена: {hypothesis.Price}₽"
+            ? $"- 💰 Текущая цена: {hypothesis.Price}₽"
             : string.Empty;
     }
 
     private static string FormatStopLossLine(Hypothesis hypothesis)
     {
         return !string.IsNullOrWhiteSpace(hypothesis.StopLoss.ToString("F0"))
-            ? $"  ⛔️ Стоп-лосс: {hypothesis.StopLoss}₽"
+            ? $"- ⛔️ Стоп-лосс: {hypothesis.StopLoss}₽"
             : string.Empty;
     }
 
     private static string FormatTakeProfitLine(Hypothesis hypothesis)
     {
         return !string.IsNullOrWhiteSpace(hypothesis.TakeProfit.ToString("F0"))
-            ? $"  🎯 Тейк-профит: {hypothesis.TakeProfit}₽"
+            ? $"- 🎯 Тейк-профит: {hypothesis.TakeProfit}₽"
             : string.Empty;
     }
 
     private static string FormatPeriodLine(Hypothesis hypothesis)
     {
         return !string.IsNullOrWhiteSpace(hypothesis.Period.ToString("F0"))
-            ? $"  ⏳ Срок актуальности: {hypothesis.Period} часов"
+            ? $"- ⏳ Срок актуальности: {hypothesis.Period} часов"
             : string.Empty;
     }
 
     private static string FormatTacticsLine(Hypothesis hypothesis)
     {
-        return $"💡 Идея: {hypothesis.Tactics}";
+        return $"💡 **Идея**: {hypothesis.Tactics}";
     }
 
     private static string FormatProbabilityLine(Hypothesis hypothesis)
     {
-        return $"📈 Вероятность: {(hypothesis.Probability * 100):F0}%";
+        return $"📈 **Вероятность**: {(hypothesis.Probability * 100):F0}%";
     }
 
     private static string FormatEventLine(NewsAnalyze newsAnalyze)
     {
-        return $"\r\nСобытие: {newsAnalyze.Brief}";
+        return $"\r\n**Событие**: {newsAnalyze.Brief}";
     }
 
     private static string FormatFinalMessage(List<string> blocks, NewsAnalyze newsAnalyze)
     {
-        return string.Join("___", blocks) + FormatEventLine(newsAnalyze);
+        return string.Join("\r\n___\r\n", blocks) + FormatEventLine(newsAnalyze);
     }
 
 	private static string MapActionToText(string action)
 	{
 		return action switch
 		{
-			"Long" => "🟢 Покупай",
-			"Short" => "🔴 Продавай",
-			"Hold" => "🟡 Держи",
-			_ => ""
+			"Long" => "🟢 **Покупай",
+			"Short" => "🔴 **Продавай",
+			"Hold" => "🟡 **Держи",
+			_ => "**"
 		};
 	}
     

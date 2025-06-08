@@ -26,18 +26,6 @@ variable "gpt_api_key" {
   type = string
 }
 
-variable "seq_password" {
-  type = string
-}
-
-variable "seq_password_hash" {
-  type = string
-}
-
-variable "seq_api_key" {
-  type = string
-}
-
 variable "admin_bot_token" {
   type = string
 }
