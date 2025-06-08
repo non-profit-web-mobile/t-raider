@@ -50,8 +50,7 @@ public class MessageToSendFactory : IMessageToSendFactory
 			FormatTakeProfitLine(hypothesis),
 			FormatPeriodLine(hypothesis),
 			FormatTacticsLine(hypothesis),
-			FormatProbabilityLine(hypothesis),
-			AddDivider()
+			FormatProbabilityLine(hypothesis)
 		});
 	}
 
@@ -105,7 +104,7 @@ public class MessageToSendFactory : IMessageToSendFactory
 
 	private static string FormatFinalMessage(List<string> blocks, NewsAnalyze newsAnalyze)
 	{
-		return string.Join("\n", blocks) + FormatEventLine(newsAnalyze);
+		return string.Join("___", blocks) + FormatEventLine(newsAnalyze);
 	}
 
 	private static string MapActionToText(string action)
@@ -117,10 +116,5 @@ public class MessageToSendFactory : IMessageToSendFactory
 			"Hold" => "🟡 Держи",
 			_ => ""
 		};
-	}
-
-	private static string AddDivider()
-	{
-		return "___";
 	}
 }
