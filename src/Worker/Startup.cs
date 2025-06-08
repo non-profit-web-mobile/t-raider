@@ -1,5 +1,3 @@
-using Model.Kafka;
-
 namespace Worker;
 
 public class Startup(IConfiguration configuration)
@@ -9,6 +7,10 @@ public class Startup(IConfiguration configuration)
 		services.AddControllers();
 
 		services.AddModel(configuration);
+
+		var seqSection = configuration.GetSection("Seq");
+		if (seqSection.Exists())
+			services.AddLogging(builder => builder.AddSeq(seqSection));
 	}
 
 	public void Configure(IApplicationBuilder app, IWebHostEnvironment environment)

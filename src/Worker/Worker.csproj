@@ -30,4 +30,8 @@
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Seq.Extensions.Logging" Version="8.0.0" />
+	</ItemGroup>
 </Project>
