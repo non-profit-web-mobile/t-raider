@@ -107,7 +107,7 @@ public class MessageToSendFactory(IMessageClickEncoder messageClickEncoder) : IM
 
     private static string FormatActionLine(Hypothesis hypothesis)
     {
-        return $"{MapActionToText(hypothesis.Action)} {hypothesis.Ticker}**";
+        return $"{MapActionToText(hypothesis.Action)} {hypothesis.Ticker}*\r\n";
     }
 
     private static string FormatPriceLine(Hypothesis hypothesis)
@@ -140,17 +140,17 @@ public class MessageToSendFactory(IMessageClickEncoder messageClickEncoder) : IM
 
     private static string FormatTacticsLine(Hypothesis hypothesis)
     {
-        return $"💡 **Идея**: {hypothesis.Tactics}";
+        return $"💡 *Идея*: {hypothesis.Tactics}";
     }
 
     private static string FormatProbabilityLine(Hypothesis hypothesis)
     {
-        return $"📈 **Вероятность**: {(hypothesis.Probability * 100):F0}%";
+        return $"📈 *Вероятность*: {(hypothesis.Probability * 100):F0}%";
     }
 
     private static string FormatEventLine(NewsAnalyze newsAnalyze)
     {
-        return $"\r\n**Событие**: {newsAnalyze.Brief}";
+        return $"\r\n*Событие*: {newsAnalyze.Brief}";
     }
 
     private static string FormatFinalMessage(List<string> blocks, NewsAnalyze newsAnalyze)
@@ -162,10 +162,10 @@ public class MessageToSendFactory(IMessageClickEncoder messageClickEncoder) : IM
 	{
 		return action switch
 		{
-			"Long" => "🟢 **Покупай",
-			"Short" => "🔴 **Продавай",
-			"Hold" => "🟡 **Держи",
-			_ => "**"
+			"Long" => "🟢 *Покупай",
+			"Short" => "🔴 *Продавай",
+			"Hold" => "🟡 *Держи",
+			_ => "*"
 		};
 	}
     
