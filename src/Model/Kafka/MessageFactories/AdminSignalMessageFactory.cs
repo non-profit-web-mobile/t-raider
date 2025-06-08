@@ -22,8 +22,12 @@ public class AdminSignalMessageFactory : IAdminSignalMessageFactory
             $"По новости сформулировано {newsProcessorSuccessResult.NewsAnalyze.Hypotheses.Count} гипотез\r\n" +
             $"Потрачено токенов {newsProcessorSuccessResult.UsageTotalTokenCount}, время обработки {formattedProcessingDurationTime}\r\n" +
             $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss (UTC)}\r\n" +
-            $"Ответ openai:\r\n" +
-            $"```JSON{json}```";
+            $"Ответ от GPT:\r\n" +
+            $"```\r\n" +
+            $"{json}\r\n" +
+            $"```";
+
+
 
         return new AdminSignalMessage(message);
     }

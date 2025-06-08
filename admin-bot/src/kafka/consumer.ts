@@ -24,7 +24,9 @@ export async function startAdminSignalsConsumer(bot: Telegraf) {
 
             for (const adminId of config.ADMIN_IDS) {
               try {
-                await bot.telegram.sendMessage(adminId, adminSignal.message);
+                await bot.telegram.sendMessage(adminId, adminSignal.message, {
+                  parse_mode: 'Markdown',
+                });
                 logger.info(`Admin signal sent to admin ${adminId}`);
               } catch (error) {
                 logger.error(

@@ -100,7 +100,7 @@ export const SourceTypes = {
 } as const;
 
 export const ConfidenceValues = {
-  conservative: 0.3,
+  conservative: 0.8,
   mixed: 0.5,
-  maximum: 0.8
+  maximum: 0.3
 } as const; 
