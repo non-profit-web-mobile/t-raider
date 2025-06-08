@@ -16,6 +16,8 @@ jobs:
       services_image: t_raider_services
       worker_image: t_raider_worker
       migrator_image: t_raider_migrator
+      bot_image: t_raider_bot
+      admin_bot_image: t_raider_admin_bot
 
       DOCKER_BUILDKIT: 1
 
@@ -28,6 +30,8 @@ jobs:
           docker build . --rm --tag ${{ env.registry }}/${{ env.services_image }}:latest --target services
           docker build . --rm --tag ${{ env.registry }}/${{ env.worker_image }}:latest --target worker
           docker build . --rm --tag ${{ env.registry }}/${{ env.migrator_image }}:latest --target migrator
+          docker build -f /bot/Dockerfile . --rm --tag ${{ env.registry }}/${{ env.bot_image }}:latest
+          docker build -f /admin-bot/Dockerfile . --rm --tag ${{ env.registry }}/${{ env.admin_bot_image }}:latest
 
       - name: Login in docker registry
         run: echo '${{ secrets.YANDEX_AUTHORIZED_KEY }}' | docker login --username json_key --password-stdin cr.yandex
@@ -37,3 +41,5 @@ jobs:
           docker push ${{ env.registry }}/${{ env.services_image }}:latest
           docker push ${{ env.registry }}/${{ env.worker_image }}:latest
           docker push ${{ env.registry }}/${{ env.migrator_image }}:latest
+          docker push ${{ env.registry }}/${{ env.bot_image }}:latest
+          docker push ${{ env.registry }}/${{ env.admin_bot_image }}:latest
