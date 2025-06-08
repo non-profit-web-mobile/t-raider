@@ -27,7 +27,7 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
         }
         catch (Exception exception)
         {
-            return NewsProcessorErrorResultFactory.Create(exception);
+            return NewsProcessorErrorResultFactory.Create(newsUrl, exception);
         }
     }
 

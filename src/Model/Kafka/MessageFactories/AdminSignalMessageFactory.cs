@@ -25,6 +25,14 @@ public class AdminSignalMessageFactory : IAdminSignalMessageFactory
 
     public AdminSignalMessage Create(NewsProcessorErrorResult newsProcessorErrorResult)
     {
-        return new AdminSignalMessage("Test admin failed signal");
+        var trimmedErrorMessage = newsProcessorErrorResult.ErrorMessage.Length > 300
+            ? newsProcessorErrorResult.ErrorMessage + "..."
+            : newsProcessorErrorResult.ErrorMessage;
+
+        return new AdminSignalMessage(
+            $"💔 Произошла ошибка при обработке новости из источника {newsProcessorErrorResult.NewsUrl}\r\n" +
+            $"📊 Детали ниже:\r\n" +
+            $"{trimmedErrorMessage}" +
+            $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss (UTC)}");
     }
 }
