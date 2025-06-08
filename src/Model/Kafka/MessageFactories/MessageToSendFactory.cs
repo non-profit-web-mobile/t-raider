@@ -150,7 +150,7 @@ public class MessageToSendFactory(IMessageClickEncoder messageClickEncoder) : IM
 
     private static string FormatEventLine(NewsAnalyze newsAnalyze)
     {
-        return $"Событие: {newsAnalyze.Brief}";
+        return $"\r\nСобытие: {newsAnalyze.Brief}";
     }
 
     private static string FormatFinalMessage(List<string> blocks, NewsAnalyze newsAnalyze)
