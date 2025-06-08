@@ -116,7 +116,7 @@ services:
     image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_services:latest
     container_name: services
     ports:
-      - 5000:8080
+      - 4000:8080
     depends_on:
       postgres:
         condition: service_healthy
