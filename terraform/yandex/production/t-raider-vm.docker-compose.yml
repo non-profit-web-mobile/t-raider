@@ -18,7 +18,7 @@ services:
   seq-cli:
     image: datalust/seqcli:latest
     container_name: seq-cli
-    command: apikey create -t t-raider-apikey --token ${seq_apikey} -s http://seq --connect-username t-raider-user --connect-password ${seq_password}
+    command: apikey create -t t-raider-apikey --token ${seq_api_key} -s http://seq --connect-username t-raider-user --connect-password ${seq_password}
     depends_on:
       seq:
         condition: service_started
@@ -125,6 +125,8 @@ services:
       ConnectionStrings__TRaiderDatabase: "User ID=admin;Password=${postgres_password};Host=postgres;Port=5432;Database=t-raider-database;"
       Gpt__Uri: "https://api.proxyapi.ru/openai/v1"
       Gpt__ApiKey: "${gpt_api_key}"
+      Seq__ServerUrl: "http://seq:5341"
+      Seq__ApiKey: "${seq_api_key}"
     restart: on-failure
 
   # telegram-bot:

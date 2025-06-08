@@ -34,7 +34,7 @@ variable "seq_password_hash" {
   type = string
 }
 
-variable "seq_apikey" {
+variable "seq_api_key" {
   type = string
 }
 
