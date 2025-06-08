@@ -50,7 +50,8 @@ public class MessageToSendFactory : IMessageToSendFactory
 			FormatTakeProfitLine(hypothesis),
 			FormatPeriodLine(hypothesis),
 			FormatTacticsLine(hypothesis),
-			FormatProbabilityLine(hypothesis)
+			FormatProbabilityLine(hypothesis),
+			AddDivider()
 		});
 	}
 
@@ -116,5 +117,10 @@ public class MessageToSendFactory : IMessageToSendFactory
 			"Hold" => "🟡 Держи",
 			_ => ""
 		};
+	}
+
+	private static string AddDivider()
+	{
+		return "___";
 	}
 }
