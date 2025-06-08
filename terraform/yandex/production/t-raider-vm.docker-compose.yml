@@ -1,6 +1,29 @@
 version: '3.8'
 
 services:
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - 5341:80
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_ADMINUSERNAME: "t-raider-user"
+      SEQ_FIRSTRUN_ADMINPASSWORDHASH: "${seq_password_hash}"
+      SEQ_FIRSTRUN_REQUIREAUTHENTICATIONFORHTTPINGESTION: "True"
+    volumes:
+      - seq-data:/data
+    restart: unless-stopped
+
+  seq-cli:
+    image: datalust/seqcli:latest
+    container_name: seq-cli
+    command: apikey create -t t-raider-apikey --token ${seq_apikey} -s http://seq --connect-username t-raider-user --connect-password ${seq_password}
+    depends_on:
+      seq:
+        condition: service_started
+    restart: on-failure:10
+
   postgres:
     image: postgres:15-alpine
     container_name: postgres
@@ -141,4 +164,5 @@ services:
   #         memory: 512M
 
 volumes:
+  seq-data:
   postgres_data:
