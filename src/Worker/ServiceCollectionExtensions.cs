@@ -1,5 +1,6 @@
 using Model.Data;
 using Model.Gpt;
+using Model.HypothesesProcessing;
 using Model.Kafka;
 using Model.Kafka.MessageFactories;
 using Worker.Hypotheses;
@@ -17,5 +18,6 @@ public static class ServiceCollectionExtensions
 		services.AddGpt(configuration);
 		services.AddRawNews();
 		services.AddHypotheses();
+		services.AddSingleton<IHypothesesProcessor, HypothesesProcessor>();
 	}
 }

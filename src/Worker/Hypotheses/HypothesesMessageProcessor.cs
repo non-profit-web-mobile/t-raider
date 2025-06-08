@@ -1,18 +1,15 @@
 using Confluent.Kafka;
 using Model.Data;
-using Model.Domain;
+using Model.HypothesesProcessing;
 using Model.Kafka;
-using Model.Kafka.MessageFactories;
 using Model.Kafka.Messages;
 
 namespace Worker.Hypotheses;
 
 public class HypothesesMessageProcessor(
-	ITopicInfoProvider topicInfoProvider,
 	IKafkaMessageSerializer kafkaMessageSerializer,
-	IKafkaProducer kafkaProducer,
 	IDataExecutionContext dataExecutionContext,
-	IMessageToSendFactory kafkaMessageToSendFactory)
+	IHypothesesProcessor hypothesesProcessor)
 	: IKafkaMessageProcessor<HypothesesMessage>
 {
 	public HypothesesMessage Deserialize(ConsumeResult<string, string> consumeResult)
@@ -31,59 +28,6 @@ public class HypothesesMessageProcessor(
 		var userProfiles = await repositoryRegistry.UserProfileRepository
 			.GetManyAsync(cancellationToken);
 
-		var hypothesesForUsers = new List<HypothesisForUser>();
-		foreach (var hypothesis in message.NewsAnalyze.Hypotheses)
-		{
-			foreach (var userProfile in userProfiles)
-			{
-				if (userProfile.Confidence < hypothesis.Probability
-					&& userProfile.Tickers.Any(t => t.Symbol == hypothesis.Ticker))
-				{
-					hypothesesForUsers.Add(new HypothesisForUser(userProfile.TelegramId, hypothesis));
-				}
-			}
-		}
-
-		var hypothesesForUser = hypothesesForUsers
-			.GroupBy(x => x.TelegramId)
-			.Select(x => new HypothesesForUser(x.Key, x.Select(y => y.Hypothesis).ToHashSet()))
-			.ToList();
-
-		var messages = hypothesesForUser
-			.GroupBy(x => x.Hypotheses, new HypothesesHashSetEqualityComparer())
-			.Select(x => kafkaMessageToSendFactory
-				.Create(telegramIds: x.Select(y => y.TelegramId).ToList(),
-					newsAnalyze: message.NewsAnalyze with { Hypotheses = x.Key.ToList() }))
-			.ToList();
-
-		var topicInfo = topicInfoProvider.GetHypothesesForUsersTopicInfo();
-
-		var tasks = messages.Select(x =>
-		{
-			var key = Guid.NewGuid().ToString();
-			var serializedMessage = kafkaMessageSerializer.Serialize(x);
-			return kafkaProducer.ProduceAsync(topicInfo, key, serializedMessage, cancellationToken);
-		});
-
-		await Task.WhenAll(tasks);
-	}
-
-	private record HypothesisForUser(long TelegramId, Hypothesis Hypothesis);
-
-	private record HypothesesForUser(long TelegramId, HashSet<Hypothesis> Hypotheses);
-
-	private class HypothesesHashSetEqualityComparer : IEqualityComparer<HashSet<Hypothesis>>
-	{
-		public bool Equals(HashSet<Hypothesis>? x, HashSet<Hypothesis>? y)
-		{
-			if (x == null && y == null) return true;
-			if (x == null || y == null) return false;
-			return x.SetEquals(y);
-		}
-
-		public int GetHashCode(HashSet<Hypothesis> obj)
-		{
-			return obj.Aggregate(0, (current, hypothesis) => current ^ hypothesis.GetHashCode());
-		}
+		await hypothesesProcessor.ProduceAsync(userProfiles, message.NewsAnalyze, cancellationToken);
 	}
 }
