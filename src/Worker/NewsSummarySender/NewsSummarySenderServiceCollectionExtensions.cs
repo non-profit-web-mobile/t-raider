@@ -8,7 +8,6 @@ public static class NewsSummarySenderServiceCollectionExtensions
 	public static void AddNewsSummarySender(this IServiceCollection services)
 	{
 		services.AddHostedService<NewsSummarySenderTask>();
-		services.AddScoped<NewsSummarySenderService>();
-		services.AddScoped<INewsSummarySenderProcessor, NewsSummarySenderProcessor>();
+		services.AddScoped<INewsSummarySenderService, NewsSummarySenderService>();
 	}
 }

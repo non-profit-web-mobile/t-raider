@@ -21,7 +21,6 @@ public static class ServiceCollectionExtensions
 		services.AddRawNews();
 		services.AddHypotheses();
 		services.AddSingleton<IHypothesesProcessor, HypothesesProcessor>();
-		services.AddNewsSummarySender();
 		services.AddHypothesesProcessing();
 		services.AddMessageClicks();
 	}

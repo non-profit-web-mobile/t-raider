@@ -12,22 +12,21 @@ using Model.Domain;
 
 namespace Worker.NewsSummarySender;
 
+public interface INewsSummarySenderService
+{
+	Task ExecuteAsync(CancellationToken cancellationToken);
+}
+
 public class NewsSummarySenderService(
 	ITopicInfoProvider topicInfoProvider,
 	IKafkaMessageSerializer kafkaMessageSerializer,
 	IDataExecutionContext dataExecutionContext,
 	IMessageToSendFactory messageToSendFactory,
-	IKafkaProducer kafkaProducer)
+	IKafkaProducer kafkaProducer) : INewsSummarySenderService
 {
-	public ITopicInfoProvider TopicInfoProvider { get; } = topicInfoProvider;
-	public IKafkaMessageSerializer KafkaMessageSerializer { get; } = kafkaMessageSerializer;
-	public IDataExecutionContext DataExecutionContext { get; } = dataExecutionContext;
-	public IMessageToSendFactory MessageToSendFactory { get; } = messageToSendFactory;
-	public IKafkaProducer KafkaProducer { get; } = kafkaProducer;
-
 	public async Task ExecuteAsync(CancellationToken cancellationToken)
 	{
-		var topicInfo = TopicInfoProvider.GetHypothesesTopicInfo();
+		var topicInfo = topicInfoProvider.GetHypothesesTopicInfo();
 		var consumerConfig = new ConsumerConfig
 		{
 			BootstrapServers = topicInfo.BootstrapServers,
@@ -52,7 +51,7 @@ public class NewsSummarySenderService(
 				}
 
 				emptyPolls = 0;
-				var message = KafkaMessageSerializer.Deserialize<HypothesesMessage>(consumeResult.Message.Value);
+				var message = kafkaMessageSerializer.Deserialize<HypothesesMessage>(consumeResult.Message.Value);
 				allNews.Add(message.NewsAnalyze);
 			}
 		}
@@ -60,13 +59,13 @@ public class NewsSummarySenderService(
 		if (!allNews.Any())
 			return;
 
-		await DataExecutionContext.ExecuteAsync(async repositories =>
+		await dataExecutionContext.ExecuteAsync(async repositories =>
 		{
 			var userProfiles = await repositories.UserProfileRepository.GetManyAsync(cancellationToken);
 			var summaryUsers = userProfiles.Where(u => u.SummaryEnabled).ToList();
 
 			var qualifedNews = allNews.OrderByDescending(x => x.Newsworthiness).Take(5);
-			
+
 			foreach (var user in summaryUsers)
 			{
 				var relevantNews = new List<NewsAnalyze>();
@@ -86,11 +85,11 @@ public class NewsSummarySenderService(
 
 				if (relevantNews.Any())
 				{
-					var msg = MessageToSendFactory.Create(new List<long> { user.TelegramId }, relevantNews);
-					var serialized = KafkaMessageSerializer.Serialize(msg);
-					var topic = TopicInfoProvider.GetHypothesesForUsersTopicInfo();
+					var msg = messageToSendFactory.Create(new List<long> { user.TelegramId }, relevantNews);
+					var serialized = kafkaMessageSerializer.Serialize(msg);
+					var topic = topicInfoProvider.GetHypothesesForUsersTopicInfo();
 					var key = Guid.NewGuid().ToString();
-					await KafkaProducer.ProduceAsync(topic, key, serialized, cancellationToken);
+					await kafkaProducer.ProduceAsync(topic, key, serialized, cancellationToken);
 				}
 			}
 		}, cancellationToken);
