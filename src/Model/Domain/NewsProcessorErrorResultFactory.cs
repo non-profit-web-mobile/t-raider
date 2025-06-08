@@ -3,7 +3,7 @@ using Model.Domain;
 
 public static class NewsProcessorErrorResultFactory
 {
-    public static NewsProcessorErrorResult Create(Exception exception)
+    public static NewsProcessorErrorResult Create(string newsUrl, Exception exception)
     {
         var errorInfo = SerializeException(exception);
 
@@ -12,7 +12,7 @@ public static class NewsProcessorErrorResultFactory
             WriteIndented = true
         });
 
-        return new NewsProcessorErrorResult(serialized);
+        return new NewsProcessorErrorResult(newsUrl, serialized);
     }
 
     private static object? SerializeException(Exception? exception)

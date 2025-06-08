@@ -5,6 +5,8 @@ import { config } from './config/config';
 import { connectDB } from './database/connection';
 import { BotService } from './services/bot/botService';
 import { logger } from './utils/logger';
+import { connectKafka } from './kafka/connection';
+import { NewsConsumer } from './kafka/newsConsumer';
 
 const app = express();
 const bot = new Telegraf(config.BOT_TOKEN);
@@ -51,7 +53,7 @@ async function startServer() {
     logger.info('Database connected successfully');
 
     // Создаем BotService после подключения к БД
-    const botService = new BotService();
+    const botService = new BotService(bot);
 
     // Настраиваем обработчики бота
     bot.start(async (ctx) => {
@@ -71,13 +73,17 @@ async function startServer() {
       }
     });
 
-    // // Подключение к Kafka
-    // await connectKafka();
-    // logger.info('Kafka connected successfully');
+    // Подключение к Kafka
+    await connectKafka();
+    logger.info('Kafka connected successfully');
+
+    // Запускаем Kafka консьюмер для обработки новостей
+    newsConsumer = new NewsConsumer(botService.getNewsHandler());
+    await newsConsumer.startConsuming();
+    logger.info('News consumer started successfully');
 
     // Установка вебхука
     const webhookUrl = `${config.WEBHOOK_URL}/webhook`;
-
     const webhookOptions: ExtraSetWebhook = {};
 
     if (config.WEBHOOK_SECRET !== '') {
@@ -99,13 +105,21 @@ async function startServer() {
 }
 
 // Graceful shutdown
-process.on('SIGTERM', () => {
+let newsConsumer: NewsConsumer;
+
+process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully');
+  if (newsConsumer) {
+    await newsConsumer.stopConsuming();
+  }
   process.exit(0);
 });
 
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   logger.info('SIGINT received, shutting down gracefully');
+  if (newsConsumer) {
+    await newsConsumer.stopConsuming();
+  }
   process.exit(0);
 });
 
