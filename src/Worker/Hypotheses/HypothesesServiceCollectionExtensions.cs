@@ -9,6 +9,6 @@ public static class HypothesesServiceCollectionExtensions
 	{
 		services.AddHostedService<HypothesesTask>();
 		services.AddScoped<HypothesesService>();
-		services.AddScoped<IKafkaMessageProcessor<HypothesesMessage>, HypothesesMessageProcessor>();
+		services.AddScoped<IHypothesesMessageProcessor, HypothesesMessageProcessor>();
 	}
 }

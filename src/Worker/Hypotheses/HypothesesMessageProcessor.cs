@@ -6,11 +6,13 @@ using Model.Kafka.Messages;
 
 namespace Worker.Hypotheses;
 
+public interface IHypothesesMessageProcessor : IKafkaMessageProcessor<HypothesesMessage>;
+
 public class HypothesesMessageProcessor(
 	IKafkaMessageSerializer kafkaMessageSerializer,
 	IDataExecutionContext dataExecutionContext,
 	IHypothesesProcessor hypothesesProcessor)
-	: IKafkaMessageProcessor<HypothesesMessage>
+	: IHypothesesMessageProcessor
 {
 	public HypothesesMessage Deserialize(ConsumeResult<string, string> consumeResult)
 		=> kafkaMessageSerializer.Deserialize<HypothesesMessage>(consumeResult.Message.Value);

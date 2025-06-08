@@ -5,7 +5,7 @@ namespace Worker.Hypotheses;
 
 public class HypothesesService(
 	ITopicInfoProvider topicInfoProvider,
-	IKafkaMessageProcessor<HypothesesMessage> kafkaMessageProcessor,
+	IHypothesesMessageProcessor kafkaMessageProcessor,
 	IKafkaConsumerFactory kafkaConsumerFactory)
 {
 	public async Task ExecuteAsync(CancellationToken cancellationToken)

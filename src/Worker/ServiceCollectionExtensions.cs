@@ -4,6 +4,7 @@ using Model.HypothesesProcessing;
 using Model.Kafka;
 using Model.Kafka.MessageFactories;
 using Worker.Hypotheses;
+using Worker.NewsSummarySender;
 using Worker.RawNews;
 
 namespace Worker;
@@ -19,5 +20,6 @@ public static class ServiceCollectionExtensions
 		services.AddRawNews();
 		services.AddHypotheses();
 		services.AddSingleton<IHypothesesProcessor, HypothesesProcessor>();
+		services.AddNewsSummarySender();
 	}
 }

@@ -10,13 +10,7 @@ public class NewsSummarySenderTask(
 {
 	protected override async Task ExecuteIterationAsync(IServiceScope serviceScope, CancellationToken cancellationToken)
 	{
-		// читаем весь топик гипотез, берем только топовые, 5 штук
-
-		// берем все юзеров, которые хотят получать сводку новостей summaryenabled = true
-
-		// матчим юзеров с гипотезами
-
-		// отправляем сообщение в телеграм
-		
+		var service = serviceScope.ServiceProvider.GetRequiredService<NewsSummarySenderService>();
+		await service.ExecuteAsync(cancellationToken);
 	}
 }

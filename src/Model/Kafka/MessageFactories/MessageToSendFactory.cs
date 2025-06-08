@@ -7,6 +7,8 @@ namespace Model.Kafka.MessageFactories;
 public interface IMessageToSendFactory
 {
 	public MessageToSend Create(IReadOnlyList<long> telegramIds, NewsAnalyze newsAnalyze);
+
+	public MessageToSend Create(IReadOnlyList<long> telegramIds, IReadOnlyList<NewsAnalyze> news);
 }
 
 public class MessageToSendFactory : IMessageToSendFactory
@@ -32,6 +34,30 @@ public class MessageToSendFactory : IMessageToSendFactory
 			new Button("Открыть новость", newsAnalyze.SourceUrl.ToString()),
 			new Button($"T-Инвестиции: {firstHypothesis.Ticker}", tbankUrl)
 		};
+
+		return new MessageToSend(
+			telegramIds,
+			message,
+			buttons
+		);
+	}
+
+	public MessageToSend Create(IReadOnlyList<long> telegramIds, IReadOnlyList<NewsAnalyze> news)
+	{
+		if (news == null || news.Count == 0)
+		{
+			return new MessageToSend(
+				telegramIds,
+				"❗️ Нет торговых идей за выбранный период.",
+				new List<Button>()
+			);
+		}
+
+		var header = "📊 Сводка с топовыми гипотезами по инвестированию 👇\n\n";
+		var blocks = news.Select(n => FormatNewsBlock(n)).ToList();
+		var message = header + string.Join("\n\n___\n\n", blocks);
+
+		var buttons = new List<Button> { };
 
 		return new MessageToSend(
 			telegramIds,
@@ -116,5 +142,13 @@ public class MessageToSendFactory : IMessageToSendFactory
 			"Hold" => "🟡 Держи",
 			_ => ""
 		};
+	}
+
+	private static string FormatNewsBlock(NewsAnalyze news)
+	{
+		var header = $"📰 {news.Brief}\n";
+		var hypothesesBlocks = news.Hypotheses.Select(FormatHypothesisBlock);
+		var hypothesesText = string.Join("\n\n", hypothesesBlocks);
+		return header + hypothesesText;
 	}
 }
