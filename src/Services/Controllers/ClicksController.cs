@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Model.Domain;
 using Model.Kafka;
 using Model.Kafka.MessageFactories;
 using Model.MessageClicks;
