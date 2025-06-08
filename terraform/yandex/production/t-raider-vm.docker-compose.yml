@@ -121,5 +121,34 @@ services:
       LOG_LEVEL: info
     restart: on-failure
 
+  bot:
+    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_bot:latest
+    container_name: bot
+    ports:
+      - 3000:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      BOT_TOKEN: ${bot_token}
+      WEBHOOK_URL: https://d5dr810i1jcpfspl7aun.pdkwbi1w.apigw.yandexcloud.net/bot
+      
+      PORT: 3000
+      NODE_ENV: development
+      
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: t-raider-database
+      DB_USER: admin
+      DB_PASSWORD: ${postgres_password}
+      
+      KAFKA_BROKERS: kafka:9092
+      KAFKA_CLIENT_ID: telegram-bot
+      
+      LOG_LEVEL: info
+    restart: on-failure
+
 volumes:
   postgres_data:

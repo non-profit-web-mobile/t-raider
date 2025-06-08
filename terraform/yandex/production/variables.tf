@@ -30,6 +30,10 @@ variable "admin_bot_token" {
   type = string
 }
 
+variable "bot_token" {
+  type = string
+}
+
 variable "ssh_authorized_key" {
   type = string
 }
