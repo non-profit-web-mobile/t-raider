@@ -25,6 +25,5 @@ public static class ServiceCollectionExtensions
 		services.AddSingleton<IHypothesesProcessor, HypothesesProcessor>();
 		services.AddHypothesesProcessing();
 		services.AddMessageClicks();
-		services.AddHostedService<DemoNewsTask>();
 	}
 }
