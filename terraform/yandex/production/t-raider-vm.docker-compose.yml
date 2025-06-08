@@ -63,7 +63,7 @@ services:
     restart: unless-stopped
 
   migrator:
-    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_migrator:latest
+    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_migrator:94dac65
     container_name: migrator
     depends_on:
       postgres:
@@ -73,7 +73,7 @@ services:
     restart: on-failure
 
   worker:
-    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_worker:latest
+    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_worker:94dac65
     container_name: worker
     depends_on:
       postgres:
@@ -88,7 +88,7 @@ services:
     restart: on-failure
 
   services:
-    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_services:latest
+    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_services:94dac65
     container_name: services
     ports:
       - 4000:8080
@@ -105,7 +105,7 @@ services:
     restart: on-failure
 
   admin-bot:
-    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_admin_bot:latest
+    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_admin_bot:94dac65
     container_name: admin-bot
     depends_on:
       kafka:
@@ -122,7 +122,7 @@ services:
     restart: on-failure
 
   bot:
-    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_bot:latest
+    image: cr.yandex/crpms6iaa8rs3mvdhl1a/t_raider_bot:94dac65
     container_name: bot
     ports:
       - 3000:3000
