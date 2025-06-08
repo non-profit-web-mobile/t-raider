@@ -44,6 +44,9 @@ public class OpenAIClient(IOptions<GptOptions> gptOptions) : IGptClient
             new ResponseCreationOptions
             {
                 Tools = { ResponseTool.CreateWebSearchTool() },
+                MaxOutputTokenCount = 4096,
+                Temperature = 0.3f,
+                TopP = 1
             });
 
         var messageResponseItem = GetSingleMessageResponseItem(openAiResponse);
