@@ -1,5 +1,6 @@
 using Model.Data;
 using Model.Kafka;
+using Model.Kafka.MessageFactories;
 using Model.MessageClicks;
 
 namespace Services;
@@ -10,6 +11,7 @@ public static class ServiceCollectionExtensions
 	{
 		services.AddKafka(configuration);
 		services.AddData(configuration);
+		services.AddKafkaMessages(configuration);
 		services.AddMessageClicks();
 	}
 }
